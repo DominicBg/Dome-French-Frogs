@@ -12,8 +12,13 @@ public class Ship : MonoBehaviour {
     public bool isCurrentPlayer;
     protected Vector2 direction;
 
+	void Start()
+	{
+		transform.SetPositionSphere(Dome.radiusClose);
+	}
+
 	// Update is called once per frame
-	public virtual void Update () 
+	public virtual void FixedUpdate () 
 	{
         if(isCurrentPlayer)
         {
@@ -43,7 +48,7 @@ public class Ship : MonoBehaviour {
 		}
 	}
 
-    public virtual void OnCollisionEnter(Collision collision)
+    public void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.tag == "Player")
             Destroy(collision.collider.gameObject);

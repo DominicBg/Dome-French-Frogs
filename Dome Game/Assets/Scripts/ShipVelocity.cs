@@ -5,8 +5,8 @@ using UnityEngine;
 public class ShipVelocity : Ship {
 
 	Vector2 velocity;
-	public float friction = 0.5f;
-	public float acceleration = 0.1f;
+	public float friction = 5;
+	public float acceleration = 10f;
 	public float maxVel = 10;
 
 
