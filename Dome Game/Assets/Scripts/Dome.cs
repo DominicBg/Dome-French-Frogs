@@ -9,7 +9,7 @@ public static class Dome {
 
 	public static float radiusClose = 25;
 	public static float radiusFar = 50;
-	public static float offTop = 1;
+	public static float offTop = 2;
 
 
 	/// <summary>
@@ -21,6 +21,7 @@ public static class Dome {
 	/// <param name="radius">The radius of the sphere.</param>
 	public static void MoveSphere(this Transform tr, Vector2 direction, float speed, float radius)
 	{
+		/*
 		float sphereCorrector = Mathf.Cos((tr.position.y/radiusClose) * Mathf.PI*.5f) + 1;
 		tr.position += new Vector3(0,direction.y,0) * speed / sphereCorrector;
 
@@ -28,14 +29,34 @@ public static class Dome {
 			tr.position = tr.position.SetY(radius-1);
 
 		SetPositionSphere(tr,radius);
+		*/
 
-		tr.RotateAround(center,Vector3.up,direction.x * speed);
+		float sphericCoef = 1 + Mathf.Sin((tr.position.y/radiusClose) * Mathf.PI);
+		Debug.DrawRay(tr.position, center - tr.position, Color.blue);
+
+		if((tr.position.y <= radius - offTop && direction.y > 0) ||
+		   (tr.position.y >= center.y && direction.y < 1))
+			tr.RotateAround(center,tr.right,direction.y * speed * sphericCoef);
+
+		tr.RotateAround(center,Vector3.up,direction.x * speed * sphericCoef);
+
+		
+		//if(tr.position.y > radius*0.5f - offTop)
+			//SetPositionSphere(tr,radius);
+			//tr.position = tr.position.SetY(radius*0.5f - offTop);
+		//else if (tr.position.y < center.y)
+			//SetPositionSphere(tr,radius);
+			//tr.position = tr.position.SetY(center.y);
+
+		tr.LookAt(center);
 	}
 
 	public static void SetPositionSphere(this Transform tr, float radius)
 	{
 		if(tr.position.y < 0)
 			tr.position = tr.position.SetY(0);
+		if(tr.position.y > radius-offTop)
+			tr.position = tr.position.SetY(radius-1);
 
 		Vector3 diff = tr.position - center;
 		float ratio = diff.magnitude / radius;
