@@ -30,24 +30,14 @@ public static class Dome {
 
 		SetPositionSphere(tr,radius);
 		*/
-
-		float sphericCoef = 1 + Mathf.Sin((tr.position.y/radiusClose) * Mathf.PI);
+		float sphericCoef = 1 + Mathf.Sin((tr.position.y/radiusClose) * Mathf.PI * 0.5f);
 		Debug.DrawRay(tr.position, center - tr.position, Color.blue);
 
 		if((tr.position.y <= radius - offTop && direction.y > 0) ||
 		   (tr.position.y >= center.y && direction.y < 1))
-			tr.RotateAround(center,tr.right,direction.y * speed * sphericCoef);
+			tr.RotateAround(center,tr.right,direction.y * speed);
 
 		tr.RotateAround(center,Vector3.up,direction.x * speed * sphericCoef);
-
-		
-		//if(tr.position.y > radius*0.5f - offTop)
-			//SetPositionSphere(tr,radius);
-			//tr.position = tr.position.SetY(radius*0.5f - offTop);
-		//else if (tr.position.y < center.y)
-			//SetPositionSphere(tr,radius);
-			//tr.position = tr.position.SetY(center.y);
-
 		tr.LookAt(center);
 	}
 
