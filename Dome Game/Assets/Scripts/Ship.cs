@@ -9,14 +9,17 @@ public class Ship : MonoBehaviour {
 	public SpriteRenderer sr;
 	public Transform ship;
 	public GameObject bulletPrefab;
-
-	protected Vector2 direction;
+    public bool isCurrentPlayer;
+    protected Vector2 direction;
 
 	// Update is called once per frame
-	void Update () 
+	public virtual void Update () 
 	{
-		Move();
-		Fire();
+        if(isCurrentPlayer)
+        {
+            Move();
+            Fire();
+        }
 	}
 	
 	virtual protected void Move()
@@ -39,4 +42,10 @@ public class Ship : MonoBehaviour {
 			bullet.GetComponent<Bullet>().Init(50,direction.normalized);
 		}
 	}
+
+    public virtual void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Player")
+            Destroy(collision.collider.gameObject);
+    }
 }
