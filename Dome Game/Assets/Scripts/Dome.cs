@@ -13,6 +13,7 @@ public class Dome : MonoBehaviour
 	public float radiusClose = 25;
 	public float radiusFar = 50;
 	public float offTop = 2;
+	public float limitBottom = -10;
 }
 
 public static class DomeStatic {
@@ -30,29 +31,40 @@ public static class DomeStatic {
 	public static void MoveSphere(this Transform tr, Vector2 direction, float speed, float radius)
 	{
 		/*
-		float sphereCorrector = Mathf.Cos((tr.position.y/radiusClose) * Mathf.PI*.5f) + 1;
+		float sphereCorrector = Mathf.Cos((tr.position.y/radius) * Mathf.PI*.5f) + 1;
 		tr.position += new Vector3(0,direction.y,0) * speed / sphereCorrector;
 
-		if(tr.position.y > radius-offTop)
+		if(tr.position.y > radius-Dome.instance.offTop)
 			tr.position = tr.position.SetY(radius-1);
+		tr.RotateAround(center,Vector3.up,direction.x * speed );
 
 		SetPositionSphere(tr,radius);
 		*/
+
+
 		float sphericCoef = 1 + Mathf.Sin((tr.position.y/radius) * Mathf.PI * 0.5f);
 		Debug.DrawRay(tr.position, center - tr.position, Color.blue);
 
 		if((tr.position.y <= radius - Dome.instance.offTop && direction.y > 0) ||
-		   (tr.position.y >= center.y && direction.y < 1))
+			(tr.position.y >= Dome.instance.limitBottom && direction.y < 1))
 			tr.RotateAround(center,tr.right,direction.y * speed);
 
 		tr.RotateAround(center,Vector3.up,direction.x * speed * sphericCoef);
+		//tr.RotateAround(center,Vector3.up,direction.x * speed );
+
+
+		/*
+		tr.position += (tr.right * direction.x) + (tr.up * direction.y) * speed;
+		tr.SetPositionSphere (radius);
+		*/
+
 		tr.LookAt(center);
 	}
 
 	public static void SetPositionSphere(this Transform tr, float radius)
 	{
-		if(tr.position.y < 0)
-			tr.position = tr.position.SetY(0);
+		if(tr.position.y < Dome.instance.limitBottom)
+			tr.position = tr.position.SetY(Dome.instance.limitBottom);
 		if(tr.position.y > radius-Dome.instance.offTop)
 			tr.position = tr.position.SetY(radius-1);
 

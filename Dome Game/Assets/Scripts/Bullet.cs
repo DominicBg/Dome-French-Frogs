@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour {
 	public void Init(float speed, Vector2 direction, int id)
 	{
 		this.speed = speed;
-		this.direction = direction;
+		this.direction = direction.normalized;
 		this.id = id;
 
 		transform.RotateWithDirection(direction,Mathf.Infinity);

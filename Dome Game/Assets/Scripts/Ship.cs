@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Ship : MonoBehaviour {
+	enum ControlType {Direction,Steering};
+	[SerializeField] ControlType controlType = ControlType.Direction;
+
 
 	[Header("Components")]
 	public SpriteRenderer sr;
@@ -20,19 +23,27 @@ public class Ship : MonoBehaviour {
 	public int id;
 
 	//Protected/private
-	protected Vector2 currentDirection;
+	protected Vector2 currentDirection = Vector2.one;
 
 
 	void Start()
 	{
 		transform.SetPositionSphere(Dome.instance.radiusClose);
+		ship.RotateWithDirection(currentDirection,rotationSpeed);
 	}
 
 	public virtual void FixedUpdate () 
 	{
-		Vector2 dir = new Vector2(Input.GetAxis("Horizontal"+id),Input.GetAxis("Vertical"+id));
+		Vector2 inputJoyDir = new Vector2(Input.GetAxis("Horizontal"+id),Input.GetAxis("Vertical"+id));
 
-		Move(dir);
+		if (controlType == ControlType.Direction)
+		{
+			Move(inputJoyDir);
+		}
+		else
+		{
+			MoveSteer (inputJoyDir);
+		}
 		Fire();
 		UpdatePositionSphere();
 
@@ -42,12 +53,26 @@ public class Ship : MonoBehaviour {
 	{
 		if(dir.magnitude != 0)
 		{
+			if (dir.magnitude > 1)
+				dir.Normalize ();
 			ship.RotateWithDirection(dir,rotationSpeed,0);
 			transform.MoveSphere(dir, speed * Time.deltaTime, Dome.instance.radiusClose);
 		}
 		currentDirection = dir;
 	}
-	
+	virtual protected void MoveSteer(Vector2 dir)
+	{
+		//X = rotation
+		currentDirection = GameMath.RotateVector(-dir.x  * Time.deltaTime * rotationSpeed * 10,currentDirection);
+		ship.RotateWithDirection(currentDirection,25);
+
+		//Y = speed
+		float isA = (Input.GetButton("Speed"+id) ? 0 : 1 );
+		//transform.MoveSphere(currentDirection, speed * Time.deltaTime  * isA dir.y, Dome.instance.radiusClose);
+		transform.MoveSphere(currentDirection, speed * Time.deltaTime  * isA, Dome.instance.radiusClose);
+
+	}
+
 	void Fire()
 	{
 		if(Input.GetButtonDown("Shoot"+id))

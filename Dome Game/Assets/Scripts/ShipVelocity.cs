@@ -24,7 +24,7 @@ public class ShipVelocity : Ship {
 			if(velocity.magnitude > maxVel)
 				velocity = velocity.normalized * maxVel;
 
-			ship.RotateWithDirection(dir,rotationSpeed,0);
+			ship.RotateWithDirection(dir,rotationSpeed);
 
 			currentDirection = dir;
 		}
