@@ -10,9 +10,8 @@ public class ShipVelocity : Ship {
 	public float maxVel = 10;
 
 
-	override protected void Move()
+	override protected void Move(Vector2 dir)
 	{
-		Vector2 dir = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
 		if(dir.magnitude == 0)
 		{	
 			velocity -= velocity*friction*Time.deltaTime;
@@ -27,9 +26,9 @@ public class ShipVelocity : Ship {
 
 			ship.RotateWithDirection(dir,rotationSpeed,0);
 
-			direction = dir;
+			currentDirection = dir;
 		}
 
-		transform.MoveSphere(dir+velocity,speed * Time.deltaTime, Dome.radiusClose);
+		transform.MoveSphere(dir+velocity,speed * Time.deltaTime, Dome.instance.radiusClose);
 	}
 }

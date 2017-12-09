@@ -4,25 +4,28 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour {
 
+	public int id;
 	float speed;
 	Vector2 direction;
+	[SerializeField] float lifeTime = 1;
 
-	public void Init(float speed, Vector2 direction)
+	public void Init(float speed, Vector2 direction, int id)
 	{
 		this.speed = speed;
 		this.direction = direction;
+		this.id = id;
 
 		transform.RotateWithDirection(direction,Mathf.Infinity);
+		Destroy (gameObject,lifeTime);
+	}
 
-	}
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
 	{
-		transform.MoveSphere(direction,speed*Time.deltaTime,Dome.radiusClose);
+		transform.MoveSphere(direction,speed*Time.deltaTime,Dome.instance.radiusClose);
+	}
+
+	void OnDestroy()
+	{
+		//Particle etc
 	}
 }

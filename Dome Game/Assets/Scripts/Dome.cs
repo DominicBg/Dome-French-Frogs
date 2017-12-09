@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Dome {
+
+public class Dome : MonoBehaviour
+{
+	public static Dome instance;
+	void Awake()
+	{
+		instance = this;
+	}
+	public float radiusClose = 25;
+	public float radiusFar = 50;
+	public float offTop = 2;
+}
+
+public static class DomeStatic {
 
 	public enum Dimension{Close, Far};
 	public static Vector3 center = Vector3.zero;
-
-	public static float radiusClose = 25;
-	public static float radiusFar = 50;
-	public static float offTop = 2;
-
 
 	/// <summary>
 	/// Moves the transform inside a sphere.
@@ -30,10 +38,10 @@ public static class Dome {
 
 		SetPositionSphere(tr,radius);
 		*/
-		float sphericCoef = 1 + Mathf.Sin((tr.position.y/radiusClose) * Mathf.PI * 0.5f);
+		float sphericCoef = 1 + Mathf.Sin((tr.position.y/radius) * Mathf.PI * 0.5f);
 		Debug.DrawRay(tr.position, center - tr.position, Color.blue);
 
-		if((tr.position.y <= radius - offTop && direction.y > 0) ||
+		if((tr.position.y <= radius - Dome.instance.offTop && direction.y > 0) ||
 		   (tr.position.y >= center.y && direction.y < 1))
 			tr.RotateAround(center,tr.right,direction.y * speed);
 
@@ -45,7 +53,7 @@ public static class Dome {
 	{
 		if(tr.position.y < 0)
 			tr.position = tr.position.SetY(0);
-		if(tr.position.y > radius-offTop)
+		if(tr.position.y > radius-Dome.instance.offTop)
 			tr.position = tr.position.SetY(radius-1);
 
 		Vector3 diff = tr.position - center;

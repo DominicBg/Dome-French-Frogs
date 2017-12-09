@@ -2,22 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : Singleton<PlayerController> {
 
 	public List<Player> playersList = new List<Player>();
     public Player playerRef;
 
     public Transform spawnZone;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	private int countPlayer = 0;
 
 	public void MakePlayerSpawn()
 	{
@@ -32,6 +23,7 @@ public class PlayerController : MonoBehaviour {
         p.isCurrentPlayer = true;
         playersList.Add(p);
 
-        Debug.Log(p.isCurrentPlayer);
+		p.id = countPlayer;
+		countPlayer++;
 	}
 }

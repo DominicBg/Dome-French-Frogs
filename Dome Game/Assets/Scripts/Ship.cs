@@ -4,53 +4,70 @@ using UnityEngine;
 
 public class Ship : MonoBehaviour {
 
-	public float speed = 25;
-	public float rotationSpeed = 5;
+	[Header("Components")]
 	public SpriteRenderer sr;
 	public Transform ship;
+
+	[Header("Param")]
+	public float speed = 25;
+	public float rotationSpeed = 5;
+
+	[Header("Bullets")]
 	public GameObject bulletPrefab;
-    public bool isCurrentPlayer;
-    protected Vector2 direction;
+	public float bulletSpeed;  
+
+	[Header("id")]
+	public int id;
+
+	//Protected/private
+	protected Vector2 currentDirection;
+
 
 	void Start()
 	{
-		transform.SetPositionSphere(Dome.radiusClose);
+		transform.SetPositionSphere(Dome.instance.radiusClose);
 	}
 
-	// Update is called once per frame
 	public virtual void FixedUpdate () 
 	{
-        if(isCurrentPlayer)
-        {
-            Move();
-            Fire();
-        }
+		Vector2 dir = new Vector2(Input.GetAxis("Horizontal"+id),Input.GetAxis("Vertical"+id));
+
+		Move(dir);
+		Fire();
+		UpdatePositionSphere();
+
 	}
-	
-	virtual protected void Move()
+
+	virtual protected void Move(Vector2 dir)
 	{
-		direction = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
-
-		if(direction.magnitude != 0)
+		if(dir.magnitude != 0)
 		{
-			ship.RotateWithDirection(direction,rotationSpeed,0);
-			transform.MoveSphere(direction, speed * Time.deltaTime, Dome.radiusClose);
+			ship.RotateWithDirection(dir,rotationSpeed,0);
+			transform.MoveSphere(dir, speed * Time.deltaTime, Dome.instance.radiusClose);
 		}
-
+		currentDirection = dir;
 	}
 	
 	void Fire()
 	{
-		if(Input.GetKeyDown(KeyCode.Space))
+		if(Input.GetButtonDown("Shoot"+id))
 		{
 			GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-			bullet.GetComponent<Bullet>().Init(50,direction.normalized);
+			bullet.GetComponent<Bullet>().Init(bulletSpeed,currentDirection.normalized,id);
 		}
 	}
 
-    public void OnCollisionEnter(Collision collision)
+	void UpdatePositionSphere()
+	{
+		if(Input.GetKeyDown(KeyCode.Z))
+			transform.SetPositionSphere(Dome.instance.radiusClose);
+	}
+    public void OnTriggerEnter(Collider collider)
     {
-        if (collision.collider.tag == "Player")
-            Destroy(collision.collider.gameObject);
+		if (collider.CompareTag("Bullet") && collider.GetComponent<Bullet>().id != id)
+		{    
+			Destroy(collider.gameObject);
+			Destroy(gameObject);
+		}
     }
 }
