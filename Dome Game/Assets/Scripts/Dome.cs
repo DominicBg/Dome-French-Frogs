@@ -40,17 +40,27 @@ public static class DomeStatic {
 
 		SetPositionSphere(tr,radius);
 		*/
+	
 
 
-		float sphericCoef = 1 + Mathf.Sin((tr.position.y/radius) * Mathf.PI * 0.5f);
+
+		//float sphericCoef = 1 + Mathf.Sin((tr.position.y/radius) * Mathf.PI * 0.5f);
 		Debug.DrawRay(tr.position, center - tr.position, Color.blue);
 
-		if((tr.position.y <= radius - Dome.instance.offTop && direction.y > 0) ||
-			(tr.position.y >= Dome.instance.limitBottom && direction.y < 1))
+
+		/*
+		if(tr.position.y >= Dome.instance.limitBottom)
 			tr.RotateAround(center,tr.right,direction.y * speed);
 
-		tr.RotateAround(center,Vector3.up,direction.x * speed * sphericCoef);
+			
+		//if((tr.position.y <= radius - Dome.instance.offTop && direction.y > 0) ||
+		 //  (tr.position.y >= Dome.instance.limitBottom && direction.y < 1))
+		//	tr.RotateAround(center,tr.right,direction.y * speed);
+			
+		tr.RotateAround(center,Vector3.up,direction.x * speed);
 		//tr.RotateAround(center,Vector3.up,direction.x * speed );
+		*/
+
 
 
 		/*
@@ -58,6 +68,35 @@ public static class DomeStatic {
 		tr.SetPositionSphere (radius);
 		*/
 
+		//Vector3 sphere = GameMath.CartesianToSpherical(tr.position);
+		//tr.position = GameMath.SphericalToCartesian(sphere);
+
+		
+		float x = tr.position.x + (direction.x * speed);
+		float z = tr.position.z + (-direction.y * speed);
+
+		float xzMag = GameMath.MagnitudeXZ(tr.position);
+		float t = xzMag/radius;
+		
+		if(xzMag > radius)
+		{
+			//XZ normalization
+			x = (x/xzMag) * radius;
+			z = (z/xzMag) * radius;
+			t = 1;
+		}
+		//Mathf.Cos(t*Mathf.PI*0.5f)
+		//float y = Mathf.Lerp(radius,0,t) * Mathf.Cos(t*Mathf.PI*0.5f);
+		float y = radius * Mathf.Cos(t*Mathf.PI*0.5f);
+
+		//float y = Mathf.Sin(theta) * radius;
+		Debug.Log(xzMag + " // " + t);
+
+		tr.position = new Vector3(x,y,z);
+		//tr.SetPositionSphere(radius);
+
+
+		//tr.position = GameMath.SphericalRotation(tr.position, direction.x * speed, direction.y * speed);
 		tr.LookAt(center);
 	}
 

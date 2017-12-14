@@ -452,6 +452,14 @@ public static class GameMath
 			 Mathf.Pow((transform1.position.z - transform2.position.z), 2)
 			 );
 	}
+	public static float MagnitudeXZ(Vector3 vect)
+	{
+		return Mathf.Sqrt
+			( 
+			 vect.x*vect.x +
+			 vect.z*vect.z
+			 );
+	}
 	public static float DistanceYZ(GameObject object1,GameObject object2)
 	{
 		return Mathf.Sqrt
@@ -483,7 +491,60 @@ public static class GameMath
 				);
 		return newPoint;
 	}
-	
+
+
+
+	public static Vector3 SphericalRotation(Vector3 point, float theta, float phi)
+	{
+		theta = theta * Mathf.PI / 180;
+		phi = phi * Mathf.PI / 180;
+
+		Vector3 sphereCoord = CartesianToSpherical(point);
+		Vector3 rotatedSphereCoord = new Vector3(sphereCoord.x, sphereCoord.y + theta, sphereCoord.z + phi);
+		return SphericalToCartesian(rotatedSphereCoord);
+	}
+	public static Vector3 CartesianToSpherical(Vector3 point)
+	{
+		float r = point.magnitude;
+		float theta = Mathf.Atan(point.y / ((point.x != 0) ? point.x : Mathf.Epsilon));
+		float phi = Mathf.Acos(point.z / ((r != 0) ? r : Mathf.Epsilon));
+		return new Vector3(r,theta,phi);
+	}
+	public static Vector3 SphericalToCartesian(Vector3 vector)
+	{
+		//r = x, theta = y, phi = z
+		float sinTheta = Mathf.Sin(vector.y);
+		float sinPhi = Mathf.Sin(vector.z);
+		float cosTheta = Mathf.Cos(vector.y);
+		float cosPhi =  Mathf.Cos (vector.z);
+		
+		float x = vector.x * cosTheta * sinPhi;
+		float y = vector.x * sinTheta * sinPhi;
+		float z = vector.x * cosPhi;
+		return new Vector3(x,y,z);
+	}
+	/*
+	public static Vector3 CartesianToSpherical(Vector3 point)
+	{
+		float r = point.magnitude;
+		float theta = Mathf.Acos(point.z / r);
+		float phi = Mathf.Atan(point.y / ((point.x != 0) ? point.x : Mathf.Epsilon));
+		return new Vector3(r,theta,phi);
+	}
+	public static Vector3 SphericalToCartesian(Vector3 vector)
+	{
+		//r = x, theta = y, phi = z
+		float sinTheta = Mathf.Sin(vector.y);
+		float sinPhi = Mathf.Sin(vector.z);
+		float cosTheta = Mathf.Cos(vector.y);
+		float cosPhi =  Mathf.Cos (vector.z);
+
+		float x = vector.x * sinTheta * cosPhi;
+		float y = vector.x * sinTheta * sinPhi;
+		float z = vector.x * cosTheta;
+		return new Vector3(x,y,z);
+	}
+*/
 	public static Vector3 RotateVectorY(float angle, Vector3 point)
 	{
 		Vector2 vec = RotateVector(angle,  new Vector2 (point.x, point.z));
