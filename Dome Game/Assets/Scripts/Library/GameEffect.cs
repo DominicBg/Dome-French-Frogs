@@ -493,7 +493,7 @@ public static class GameMath
 	}
 
 
-
+	/*
 	public static Vector3 SphericalRotation(Vector3 point, float theta, float phi)
 	{
 		theta = theta * Mathf.PI / 180;
@@ -506,8 +506,8 @@ public static class GameMath
 	public static Vector3 CartesianToSpherical(Vector3 point)
 	{
 		float r = point.magnitude;
-		float theta = Mathf.Atan(point.y / ((point.x != 0) ? point.x : Mathf.Epsilon));
-		float phi = Mathf.Acos(point.z / ((r != 0) ? r : Mathf.Epsilon));
+		float theta = Mathf.Atan2(point.y, point.x);
+		float phi = Mathf.Cos(point.z / ((r != 0) ? r : Mathf.Epsilon));
 		return new Vector3(r,theta,phi);
 	}
 	public static Vector3 SphericalToCartesian(Vector3 vector)
@@ -517,11 +517,35 @@ public static class GameMath
 		float sinPhi = Mathf.Sin(vector.z);
 		float cosTheta = Mathf.Cos(vector.y);
 		float cosPhi =  Mathf.Cos (vector.z);
-		
-		float x = vector.x * cosTheta * sinPhi;
-		float y = vector.x * sinTheta * sinPhi;
-		float z = vector.x * cosPhi;
+		float r = vector.x;
+
+		float x = r * sinPhi * cosTheta;
+		float y = r * sinPhi * sinTheta;
+		float z = r * cosPhi;
 		return new Vector3(x,y,z);
+	}
+	*/
+
+	public static Vector3 SphericalToCartesian(float radius, float polar, float elevation){
+		Vector3 outCart;
+		float a = radius * Mathf.Cos(elevation);
+		outCart.x = a * Mathf.Cos(polar);
+		outCart.y = radius * Mathf.Sin(elevation);
+		outCart.z = a * Mathf.Sin(polar);
+		return outCart;
+	}
+	
+	
+	public static void CartesianToSpherical(Vector3 cartCoords, out float outRadius, out float outPolar, out float outElevation){
+		if (cartCoords.x == 0)
+			cartCoords.x = Mathf.Epsilon;
+		outRadius = Mathf.Sqrt((cartCoords.x * cartCoords.x)
+		                       + (cartCoords.y * cartCoords.y)
+		                       + (cartCoords.z * cartCoords.z));
+		outPolar = Mathf.Atan(cartCoords.z / cartCoords.x);
+		if (cartCoords.x < 0)
+			outPolar += Mathf.PI;
+		outElevation = Mathf.Asin(cartCoords.y / outRadius);
 	}
 	/*
 	public static Vector3 CartesianToSpherical(Vector3 point)

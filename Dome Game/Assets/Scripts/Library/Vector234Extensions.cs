@@ -89,4 +89,52 @@ public static class Vector234Extensions
 	{
 		return (0.2126f * color.r) + (0.7152f * color.g) + (0.722f * color.b);
 	}
+
+	public static int Minimum(this int number, int min)
+	{
+		if(number < min)
+			number = min;
+		return number;
+	}
+
+	public static int Maximum(this int number, int max)
+	{
+		if(number > max)
+			number = max;
+		return number;
+	}
+
+	public static float Minimum(this float number, float min)
+	{
+		if(number < min)
+			number = min;
+		return number;
+	}
+
+	public static float Maximum(this float number, float max)
+	{
+		if(number > max)
+			number = max;
+		return number;
+	}
+	public static Transform FindHierarchyChild(this Transform tr, string name)
+	{
+		return RecursionFindHierarchyChild(tr,name);
+	}
+
+	static Transform RecursionFindHierarchyChild(Transform tr, string name)
+	{
+		if(tr.name == name)
+		{
+			return tr;
+		}
+		Transform find;
+		for (int i = 0; i < tr.childCount; i++)
+		{
+			find = RecursionFindHierarchyChild(tr.GetChild(i),name);
+			if(find != null)
+				return find;
+		}
+		return null;
+	}
 }

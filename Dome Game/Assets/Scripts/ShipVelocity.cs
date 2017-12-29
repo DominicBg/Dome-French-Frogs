@@ -27,8 +27,7 @@ public class ShipVelocity : Ship {
 		//ship.RotateWithDirection(currentDirection,25);
 
 		//transform.MoveSphere(currentDirection, speed * Time.deltaTime  * isA dir.y, Dome.instance.radiusClose);
-		transform.MoveSphere(velocity, speed * Time.deltaTime, Dome.instance.radiusClose);
-		
+		transform.MoveSphere(velocity, speed * Time.deltaTime, Dome.instance.radiusClose);		
 	}
 
 	void SetVelocity(Vector2 dir)

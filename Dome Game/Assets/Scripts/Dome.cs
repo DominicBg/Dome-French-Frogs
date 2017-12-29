@@ -47,7 +47,6 @@ public static class DomeStatic {
 		//float sphericCoef = 1 + Mathf.Sin((tr.position.y/radius) * Mathf.PI * 0.5f);
 		Debug.DrawRay(tr.position, center - tr.position, Color.blue);
 
-
 		/*
 		if(tr.position.y >= Dome.instance.limitBottom)
 			tr.RotateAround(center,tr.right,direction.y * speed);
@@ -71,33 +70,51 @@ public static class DomeStatic {
 		//Vector3 sphere = GameMath.CartesianToSpherical(tr.position);
 		//tr.position = GameMath.SphericalToCartesian(sphere);
 
-		
-		float x = tr.position.x + (direction.x * speed);
-		float z = tr.position.z + (-direction.y * speed);
+
+
+		//x2 + y2 = r2
 
 		float xzMag = GameMath.MagnitudeXZ(tr.position);
-		float t = xzMag/radius;
+		//Ajust speed by position on the sphere
+		float speedCoef = 1 + (Mathf.Epsilon + Mathf.Cos((xzMag / radius).Maximum(1) * Mathf.PI * 0.5f));
+		speed = speed * speedCoef;
+		float x = tr.position.x + (direction.x * speed);
+		float z = tr.position.z + (-direction.y * speed);
 		
 		if(xzMag > radius)
 		{
 			//XZ normalization
 			x = (x/xzMag) * radius;
 			z = (z/xzMag) * radius;
-			t = 1;
+			xzMag = radius;
 		}
 		//Mathf.Cos(t*Mathf.PI*0.5f)
 		//float y = Mathf.Lerp(radius,0,t) * Mathf.Cos(t*Mathf.PI*0.5f);
-		float y = radius * Mathf.Cos(t*Mathf.PI*0.5f);
+		//float y = radius * Mathf.Cos(t*Mathf.PI*0.5f);
 
+		//float y = Mathf.Cos(t*Mathf.PI*0.5f) * radius;
+		float y = Mathf.Sqrt(radius*radius - xzMag*xzMag);
 		//float y = Mathf.Sin(theta) * radius;
-		Debug.Log(xzMag + " // " + t);
 
 		tr.position = new Vector3(x,y,z);
-		//tr.SetPositionSphere(radius);
+
+		Debug.DrawRay(tr.position, tr.up * 25, Color.green);
+
+
+		//Spherical Coordonate
+		/*
+		float r, theta, phi;
+		GameMath.CartesianToSpherical(tr.position,out r,out theta,out phi);
+		theta += direction.y * speed;
+		phi += direction.x * speed;
+		tr.position = GameMath.SphericalToCartesian(r,theta,phi);
+		*/
 
 
 		//tr.position = GameMath.SphericalRotation(tr.position, direction.x * speed, direction.y * speed);
-		tr.LookAt(center);
+		//tr.LookAt(center);
+
+		tr.LookAt(center,tr.up);
 	}
 
 	public static void SetPositionSphere(this Transform tr, float radius)
@@ -111,16 +128,15 @@ public static class DomeStatic {
 		float ratio = diff.magnitude / radius;
 		tr.position = center + (diff / ratio);
 
-		tr.LookAt(center);
+		tr.LookAt(center, tr.up);
 	}
 
 
 	public static void RotateWithDirection(this Transform tr, Vector2 dir, float speed, float offSet)
 	{
-		float nonZeroY = (dir.y == 0) ? Mathf.Epsilon : dir.y;
-		float z = Mathf.Atan2(dir.x , nonZeroY) * Mathf.Rad2Deg;
+		//float nonZeroY = (dir.y == 0) ? Mathf.Epsilon : dir.y;
+		float z = Mathf.Atan2(dir.x , dir.y) * Mathf.Rad2Deg;
 		Quaternion desired = Quaternion.Euler(new Vector3(0,0,z + offSet));
-
 		tr.localRotation = Quaternion.RotateTowards(tr.localRotation,desired,speed);
 	}
 
