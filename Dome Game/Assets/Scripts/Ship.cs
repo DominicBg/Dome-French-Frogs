@@ -56,7 +56,7 @@ public class Ship : MonoBehaviour {
 			if (dir.magnitude > 1)
 				dir.Normalize ();
 			ship.RotateWithDirection(dir,rotationSpeed,0);
-			transform.MoveSphere(dir, speed * Time.deltaTime, Dome.instance.radiusClose);
+			transform.MoveSphereSprite(ship,dir, speed * Time.deltaTime, Dome.instance.radiusClose);
 		}
 		currentDirection = dir;
 	}
@@ -66,10 +66,10 @@ public class Ship : MonoBehaviour {
 		currentDirection = GameMath.RotateVector(-dir.x  * Time.deltaTime * rotationSpeed * 10,currentDirection);
 		ship.RotateWithDirection(currentDirection,25);
 
-		//Y = speed
-		float isA = (Input.GetButton("Speed"+id) ? 0 : 1 );
-		//transform.MoveSphere(currentDirection, speed * Time.deltaTime  * isA dir.y, Dome.instance.radiusClose);
-		transform.MoveSphere(currentDirection, speed * Time.deltaTime  * isA, Dome.instance.radiusClose);
+        //Y = speed
+        //float isA = (Input.GetButton("Speed"+id) ? 0 : 1 );
+        //transform.MoveSphere(currentDirection, speed * Time.deltaTime  * isA dir.y, Dome.instance.radiusClose);
+        transform.MoveSphereSprite(ship,dir,speed * Time.deltaTime, Dome.instance.radiusClose);
 
 	}
 

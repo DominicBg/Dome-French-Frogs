@@ -28,7 +28,7 @@ public static class DomeStatic {
 	/// <param name="direction">The direction to move</param>
 	/// <param name="speed">The Speed, consider multiplying your speed by Time.deltaTime</param>
 	/// <param name="radius">The radius of the sphere.</param>
-	public static void MoveSphere(this Transform tr, Vector2 direction, float speed, float radius)
+	public static void MoveSphereSprite(this Transform tr, Transform spriteTr, Vector2 direction, float speed, float radius)
 	{
 		/*
 		float sphereCorrector = Mathf.Cos((tr.position.y/radius) * Mathf.PI*.5f) + 1;
@@ -47,7 +47,7 @@ public static class DomeStatic {
 		//float sphericCoef = 1 + Mathf.Sin((tr.position.y/radius) * Mathf.PI * 0.5f);
 		Debug.DrawRay(tr.position, center - tr.position, Color.blue);
 
-		/*
+        /*
 		if(tr.position.y >= Dome.instance.limitBottom)
 			tr.RotateAround(center,tr.right,direction.y * speed);
 
@@ -62,19 +62,19 @@ public static class DomeStatic {
 
 
 
-		/*
+        /*
 		tr.position += (tr.right * direction.x) + (tr.up * direction.y) * speed;
 		tr.SetPositionSphere (radius);
 		*/
 
-		//Vector3 sphere = GameMath.CartesianToSpherical(tr.position);
-		//tr.position = GameMath.SphericalToCartesian(sphere);
+        //Vector3 sphere = GameMath.CartesianToSpherical(tr.position);
+        //tr.position = GameMath.SphericalToCartesian(sphere);
 
 
+        /*
+        //x2 + y2 = r2
 
-		//x2 + y2 = r2
-
-		float xzMag = GameMath.MagnitudeXZ(tr.position);
+        float xzMag = GameMath.MagnitudeXZ(tr.position);
 		//Ajust speed by position on the sphere
 		float speedCoef = 1 + (Mathf.Epsilon + Mathf.Cos((xzMag / radius).Maximum(1) * Mathf.PI * 0.5f));
 		speed = speed * speedCoef;
@@ -99,10 +99,10 @@ public static class DomeStatic {
 		tr.position = new Vector3(x,y,z);
 
 		Debug.DrawRay(tr.position, tr.up * 25, Color.green);
+        */
 
-
-		//Spherical Coordonate
-		/*
+        //Spherical Coordonate
+        /*
 		float r, theta, phi;
 		GameMath.CartesianToSpherical(tr.position,out r,out theta,out phi);
 		theta += direction.y * speed;
@@ -111,11 +111,18 @@ public static class DomeStatic {
 		*/
 
 
-		//tr.position = GameMath.SphericalRotation(tr.position, direction.x * speed, direction.y * speed);
-		//tr.LookAt(center);
+        //tr.position = GameMath.SphericalRotation(tr.position, direction.x * speed, direction.y * speed);
+        //tr.LookAt(center);
+        Debug.DrawRay(tr.position, spriteTr.right * 10 , Color.magenta);
+        Debug.DrawRay(tr.position, spriteTr.up * 10, Color.magenta);
 
-		tr.LookAt(center,tr.up);
-	}
+        tr.RotateAround(center, spriteTr.right, speed);
+        //TODO 
+        //limiter le y
+
+
+        //tr.LookAt(center,tr.up);
+    }
 
 	public static void SetPositionSphere(this Transform tr, float radius)
 	{

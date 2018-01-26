@@ -14,7 +14,7 @@ public class ShipVelocity : Ship {
 	{
 		SetVelocity(dir);
 
-		transform.MoveSphere(dir+velocity,speed * Time.deltaTime, Dome.instance.radiusClose);
+		transform.MoveSphereSprite(ship,dir + velocity, speed * Time.deltaTime, Dome.instance.radiusClose);
 	}
 	override protected void MoveSteer(Vector2 dir)
 	{
@@ -24,11 +24,10 @@ public class ShipVelocity : Ship {
 		currentDirection.Normalize();
 		SetVelocity(currentDirection);
 
-		//ship.RotateWithDirection(currentDirection,25);
-
 		//transform.MoveSphere(currentDirection, speed * Time.deltaTime  * isA dir.y, Dome.instance.radiusClose);
-		transform.MoveSphere(velocity, speed * Time.deltaTime, Dome.instance.radiusClose);		
-	}
+		transform.MoveSphereSprite(ship, currentDirection, speed * Time.deltaTime, Dome.instance.radiusClose);
+        ship.RotateWithDirection(currentDirection, 25);
+    }
 
 	void SetVelocity(Vector2 dir)
 	{		

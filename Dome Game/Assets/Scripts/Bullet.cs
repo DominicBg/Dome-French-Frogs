@@ -21,7 +21,7 @@ public class Bullet : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
-		transform.MoveSphere(direction,speed*Time.deltaTime,Dome.instance.radiusClose);
+		//transform.MoveSphereSprite(direction,transform,speed*Time.deltaTime,Dome.instance.radiusClose);
 	}
 
 	void OnDestroy()
