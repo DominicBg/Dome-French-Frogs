@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : ShipVelocity {
-	public bool isCurrentPlayer;
+public class Player : MonoBehaviour   {
 
-	override public void FixedUpdate()
-	{
-		if(isCurrentPlayer)
-			base.FixedUpdate();
-	}
+    public int ID { protected set; get; }
+
+    protected virtual void Spawn(int id) { }
+    protected virtual void Move(Vector2 dir) { }
+    protected virtual void MoveSteer(Vector2 dir) { }
+    protected virtual void PressActionButton() { }
+
+    public virtual void FixedUpdate() { }
+
+
+
+
 }

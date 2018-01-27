@@ -10,7 +10,7 @@ public class ShipVelocity : Ship {
 	public float maxVel = 10;
 
 
-	override protected void Move(Vector2 dir)
+	protected override void Move(Vector2 dir)
 	{
 		SetVelocity(dir);
 
@@ -32,7 +32,7 @@ public class ShipVelocity : Ship {
 	void SetVelocity(Vector2 dir)
 	{		
 		//Y = speed
-		if(dir.magnitude == 0 || Input.GetButton("Speed"+id))
+		if(dir.magnitude == 0 || Input.GetButton("Speed"+ID))
 		{	
 			velocity -= velocity*friction*Time.deltaTime;
 		}

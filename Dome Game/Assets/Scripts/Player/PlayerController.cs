@@ -2,28 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : Singleton<PlayerController> {
+public class PlayerController : Singleton<PlayerController>
+{
 
-	public List<Player> playersList = new List<Player>();
-    public Player playerRef;
+    public List<Player> PlayerList { private set; get; }
+
+    public int PlayerCount
+    {
+        get
+        {
+            return PlayerList != null ? PlayerList.Count : 0;
+        }
+    }
 
     public Transform spawnZone;
-	private int countPlayer = 0;
 
-	public void MakePlayerSpawn()
-	{
-        foreach(Player pl in playersList)
-        {
-            if (pl.isCurrentPlayer)
-                pl.isCurrentPlayer = false;
-        }
 
-        Player p = Instantiate(playerRef);
-        p.transform.SetParent(spawnZone,false);
-        p.isCurrentPlayer = true;
-        playersList.Add(p);
+    public GameObject InstantiatePlayer(GameObject prefab)
+    {
+        if (PlayerList == null)
+            PlayerList = new List<Player>();
 
-		p.id = countPlayer;
-		countPlayer++;
-	}
+        GameObject PlayerGameObject = Instantiate(prefab, spawnZone.transform.position, Quaternion.identity) as GameObject;
+        Player newPlayer = PlayerGameObject.GetComponent<Player>();
+        PlayerList.Add(newPlayer);
+        return PlayerGameObject;
+    }
+
+    private static void AddPlayer(Player newPlayer)
+    {
+
+    }
+
+
+
+
 }
