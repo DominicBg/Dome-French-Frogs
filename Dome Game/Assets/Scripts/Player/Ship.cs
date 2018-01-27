@@ -7,8 +7,10 @@ public class Ship : Player {
     enum ControlType {Direction,Steering};
 	[SerializeField] ControlType controlType = ControlType.Direction;
 
+    [Header("Debug")]
+    public bool isDebug = false;
 
-	[Header("Components")]
+    [Header("Components")]
 	public SpriteRenderer sr;
 	public Transform ship;
 
@@ -30,11 +32,16 @@ public class Ship : Player {
 
     private void Start()
     {
+        if(isDebug)
         ID = id;
     }
 
     public override void FixedUpdate () 
 	{
+        if (!isLocalPlayer)
+            return;
+
+
 		Vector2 inputJoyDir = new Vector2(Input.GetAxis("Horizontal"+ID),Input.GetAxis("Vertical"+ID));
 
 		if (controlType == ControlType.Direction)

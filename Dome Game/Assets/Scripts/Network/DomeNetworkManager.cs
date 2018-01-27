@@ -14,10 +14,6 @@ public class DomeNetworkManager : NetworkManager {
         if (Application.isEditor)
             StartServer();
 
-        else
-            StartClient();
-
-
 	}
 	
 
@@ -34,10 +30,10 @@ public class DomeNetworkManager : NetworkManager {
     }
 
     // Server
-   public override void OnClientConnect(NetworkConnection conn) {       
- 
-         // Create message to set the player
-         IntegerMessage msg = new IntegerMessage(0);      
+   public override void OnClientConnect(NetworkConnection conn) {
+
+        // Create message to set the player
+        StringMessage msg = new StringMessage("a");
   
          // Call Add player and pass the message
          ClientScene.AddPlayer(conn,0, msg);
@@ -47,17 +43,19 @@ public class DomeNetworkManager : NetworkManager {
     // Server
      public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId, NetworkReader extraMessageReader ) { 
          
+        
+
         // Read client message and receive index
          if (extraMessageReader != null) {
-            // var stream = extraMessageReader.ReadMessage<IntegerMessage> ();
-            // curPlayer = stream.value;
+            var stream = extraMessageReader.ReadMessage<StringMessage>();
+            Debug.Log(stream.value);
          }
         
          //Select the prefab from the spawnable objects list
          var playerPrefab = spawnPrefabs[0];
 
         // Create player object with prefab
-        var player = PlayerController.Instance.InstantiatePlayer(playerPrefab);      
+        var player = PlayerController.Instance.InstantiatePlayer(playerPrefab,conn);      
          
          // Add player object for connection
          NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
