@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class Ship : Player {
 
     enum ControlType {Direction,Steering};
@@ -106,4 +106,4 @@ public class Ship : Player {
             bullet.GetComponent<Bullet>().Init(bulletSpeed, currentDirection.normalized, ID);
         }
     }
-}
+}*/
