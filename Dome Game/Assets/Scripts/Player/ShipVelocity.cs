@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class ShipVelocity : Ship {
 
 	Vector2 velocity;
@@ -53,3 +53,4 @@ public class ShipVelocity : Ship {
 		}
 	}
 }
+*/
