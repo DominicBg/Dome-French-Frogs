@@ -18,7 +18,7 @@ public class NetworkObjectManager : NetworkBehaviour
     {
         ID = netId.Value;
         // Create player object with prefab
-        Player = PlayerController.Instance.InstantiatePlayer((int)ID);
+        Player = PlayerController.Instance.InstantiatePlayer(netId);
         Player.transform.SetParent(gameObject.transform);
 
     }
@@ -33,7 +33,7 @@ public class NetworkObjectManager : NetworkBehaviour
     public void CmdSendVectorData(Vector3 _data)
     {
         Debug.Log(_data + "," + connectionToClient.connectionId);
-        Player.GetComponent<Player>().MoveSteer(_data);
+        Player.GetComponent<Player>().PInput.Set(_data.x, _data.y);
     }
 
     [Command]

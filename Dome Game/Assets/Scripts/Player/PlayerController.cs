@@ -21,23 +21,30 @@ public class PlayerController : Singleton<PlayerController>
 
     public GameObject InstantiatePlayer()
     {
-        return InstantiatePlayer( PlayerCount + 1);
+        return InstantiatePlayer( PlayerCount + 1, false);
     }
 
-    public GameObject InstantiatePlayer(NetworkConnection conn)
+    public GameObject InstantiatePlayer(NetworkInstanceId netId)
     {
-        GameObject Player = InstantiatePlayer(conn.connectionId);
-        return Player;
+        return InstantiatePlayer((int)netId.Value, true);
     }
 
-    public GameObject InstantiatePlayer(int id)
+    public GameObject InstantiatePlayer(int id, bool isNetworkInput)
     {
         if (PlayerList == null)
             PlayerList = new List<Player>();
 
         GameObject PlayerGameObject = Instantiate(PlayerPrefab, spawnZone.transform.position, Quaternion.identity) as GameObject;
         Player newPlayer = PlayerGameObject.GetComponent<Player>();
-        newPlayer.ID = id; 
+
+        PlayerInput p;
+        if (isNetworkInput)
+            p = new PlayerNetworkInput(newPlayer);
+        else
+            p = new PlayerGameControllerInput(newPlayer);
+
+
+        newPlayer.Spawn(id,p);
         PlayerList.Add(newPlayer);
         return PlayerGameObject;
     }

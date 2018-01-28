@@ -22,7 +22,7 @@ public class NetworkObjectManager : NetworkBehaviour
     public void FixedUpdate()
     {
         if(isLocalPlayer)
-            CmdSendVectorData(netId.Value * new Vector3(0, 0, 0));
+            CmdSendVectorData(netId.Value * new Vector3(0.5f, 0.3f, 0));
     }
 
  

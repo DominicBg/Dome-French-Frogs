@@ -5,11 +5,13 @@ using UnityEngine.Networking;
 
 public class Player : MonoBehaviour   {
 
-    public int ID;
+    public int ID { protected set; get; }
+    public PlayerInput PInput { protected set; get; }
 
-    protected virtual void Spawn(int id) {
+    public virtual void Spawn(int id, PlayerInput inputType){
 
     }
+
 
     protected virtual void Move(Vector2 dir) { }
     public virtual void MoveSteer(Vector2 dir) { }
