@@ -53,7 +53,7 @@ public class PlayerSnake : Player {
 
 		//Debug
 		UpdatePositionSphere();
-		if(Input.GetKeyDown(KeyCode.Z))
+		if(Input.GetKeyDown(KeyCode.X))
 			AddTailPart();
 	}
 	
