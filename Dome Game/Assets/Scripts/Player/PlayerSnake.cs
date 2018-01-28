@@ -47,7 +47,7 @@ public class PlayerSnake : Player {
 	public override void FixedUpdate ()
 	{
 		Vector2 inputJoyDir = new Vector2(Input.GetAxis("Horizontal"+ID),Input.GetAxis("Vertical"+ID));
-		MoveSteer (inputJoyDir);
+		//MoveSteer (inputJoyDir);
 		PressActionButton();
 		UpdateTail();
 
@@ -63,13 +63,13 @@ public class PlayerSnake : Player {
 		transform.SetPositionSphere(Dome.instance.radiusClose);
 	}
 
-	protected override void PressActionButton ()
+	public override void PressActionButton ()
 	{
 
 	}
 
 
-	override protected void MoveSteer(Vector2 dir)
+	override public void MoveSteer(Vector2 dir)
 	{
 		previousDirection = currentDirection;
 		//X = rotation

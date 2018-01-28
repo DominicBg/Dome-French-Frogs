@@ -53,6 +53,7 @@ public static class DomeStatic {
 
 	public static void RotateWithDirection(this Transform tr, Vector2 dir, float speed, float offSet)
 	{
+
 		//float nonZeroY = (dir.y == 0) ? Mathf.Epsilon : dir.y;
 		float z = Mathf.Atan2(dir.x , dir.y) * Mathf.Rad2Deg;
 		Quaternion desired = Quaternion.Euler(new Vector3(0,0,z + offSet));

@@ -10,10 +10,7 @@ public class DomeNetworkManager : NetworkManager {
 
 	// Use this for initialization
 	void Start () {
-
-        if (Application.isEditor)
-            StartServer();
-
+        StartServer();
 	}
 	
 
@@ -27,41 +24,6 @@ public class DomeNetworkManager : NetworkManager {
     {
         base.OnStartServer();
         Debug.Log("Server stopped");
-    }
-
-    // Server
-   public override void OnClientConnect(NetworkConnection conn) {
-
-        // Create message to set the player
-        StringMessage msg = new StringMessage("a");
-  
-         // Call Add player and pass the message
-         ClientScene.AddPlayer(conn,0, msg);
-     }
-  
-     
-    // Server
-     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId, NetworkReader extraMessageReader ) { 
-         
-        
-
-        // Read client message and receive index
-         if (extraMessageReader != null) {
-            var stream = extraMessageReader.ReadMessage<StringMessage>();
-            Debug.Log(stream.value);
-         }
-        
-         //Select the prefab from the spawnable objects list
-         var playerPrefab = spawnPrefabs[0];
-
-        // Create player object with prefab
-        var player = PlayerController.Instance.InstantiatePlayer(playerPrefab,conn);      
-         
-         // Add player object for connection
-         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-
-        Debug.Log("Player Added to server");
-
     }
 
 
