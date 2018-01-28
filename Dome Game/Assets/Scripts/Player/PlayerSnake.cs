@@ -109,15 +109,17 @@ public class PlayerSnake : Player {
 		if(tailList.Count == 0)
 			return;
 
-		tailList[0].direction = previousDirection;
-		MoveTail(tailList[0]);
+		MoveTailLerp(transform,spriteTransform,tailList[0],0);
+		//tailList[0].direction = previousDirection;
+		//MoveTail(tailList[0]);
 
-		for (int i = tailList.Count-1; i >= 1; i--) 
+		for (int i = tailList.Count-1; i > 0; i--) 
 		{
+			TailPart prevTail = tailList[i-1];
 			TailPart currentTail = tailList[i];
-			currentTail.direction = tailList[i-1].direction;
+			//currentTail.direction = tailList[i-1].direction;
 			//currentTail.direction = currentDirection;
-			MoveTail(currentTail);
+			MoveTailLerp(prevTail.tr,prevTail.spriteTr,currentTail,i);
 		}
 	}
 	void MoveTail(TailPart tail)
@@ -125,17 +127,47 @@ public class PlayerSnake : Player {
 		tail.spriteTr.RotateWithDirection(tail.direction, 25);
 		tail.tr.MoveSphere(tail.spriteTr.right, moveSpeed * Time.fixedDeltaTime);
 	}
+	void MoveTailLerp(Transform prevTail, Transform prevSpriteTransform, TailPart currentTail, int i)
+	{
+		Vector3 deltaPos = prevTail.position - currentTail.tr.position;
+		currentTail.tr.position =
+			Vector3.MoveTowards(currentTail.tr.position,
+			                    prevTail.position - deltaPos.normalized * tailDistance,
+			                    Time.fixedDeltaTime * moveSpeed * 2);
 
+		/*
+		currentTail.tr.rotation =
+			Quaternion.RotateTowards(currentTail.tr.rotation,
+			                         prevTail.rotation,
+			                         Time.fixedDeltaTime * moveSpeed);
+
+		currentTail.spriteTr.localRotation =
+			Quaternion.RotateTowards(currentTail.spriteTr.localRotation,
+			                         prevSpriteTransform.localRotation,
+			                         Time.fixedDeltaTime * moveSpeed);
+		*/
+		//currentTail.spriteTr.RotateWithDirection(
+		currentTail.tr.LookAt(prevTail);
+		currentTail.tr.SetPositionSphere(Dome.instance.radiusClose);
+
+
+	}
+	
 	[ContextMenu("Add tail part")]
 	public void AddTailPart()
 	{	
-		Vector3 tailPos = transform.position - (tailList.Count+1) * spriteTransform.up * tailDistance;
+		Vector3 tailPos;
+		if(tailList.Count == 0)
+			tailPos = transform.position - spriteTransform.up * tailDistance;
+		else
+			tailPos = tailList[tailList.Count-1].tr.position - tailList[tailList.Count-1].spriteTr.up * tailDistance;
+
 		GameObject tailPart = Instantiate(tailPrefab,tailPos,transform.rotation);
 		tailPart.transform.SetPositionSphere(Dome.instance.radiusClose);
 
 		//tailPart.transform.position = transform.position;
 		tailPart.transform.rotation = transform.rotation;
-		tailPart.transform.GetChild(0).rotation = spriteTransform.rotation;
+		//tailPart.transform.GetChild(0).rotation = spriteTransform.rotation;
 
 		tailList.Add(
 			new TailPart(tailPart.transform,tailPart.transform.GetChild(0),currentDirection)

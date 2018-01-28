@@ -30,9 +30,11 @@ public static class DomeStatic {
 	public static void MoveSphere(this Transform tr,Vector3 transformRight, float speed)
 	{
 		tr.RotateAround(center, transformRight, speed);
-        //TODO 
-        //limiter le y
-    }
+       	
+		//limit y
+		if(tr.position.y < Dome.instance.limitBottom)
+			tr.RotateAround(center, -transformRight, speed);
+	}
 
 	public static void SetPositionSphere(this Transform tr, float radius)
 	{
