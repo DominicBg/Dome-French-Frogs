@@ -11,14 +11,17 @@ public class PlayerSnake : Player
     public bool isDebug = false;
 
     [Header("Components")]
-    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField]
+    SpriteRenderer spriteRenderer;
     [SerializeField] Transform spriteTransform;
 
     [Header("Prefabs")]
-    [SerializeField] GameObject tailPrefab;
+    [SerializeField]
+    GameObject tailPrefab;
 
     [Header("Param")]
-    [SerializeField] float tailDistance = 5;
+    [SerializeField]
+    float tailDistance = 5;
 
     [SerializeField] float moveSpeed = 25;
     [SerializeField] float rotationSpeed = 5;
@@ -26,17 +29,18 @@ public class PlayerSnake : Player
     [SerializeField] float acceleration = 10f;
     [SerializeField] float maxVelocity = 10;
 
-	float currentSpeed;
+    float currentSpeed;
     Vector2 currentDirection = Vector2.one;
     Vector2 velocity;
     Vector2 previousDirection;
     [SerializeField] List<TailPart> tailList = new List<TailPart>();
 
-	[Header("Dash Param")]
-	[SerializeField] float dashSpeedIncrease = 25;
-	[SerializeField] float dashCooldown = 2;
-	[SerializeField] float dashDuration = 1;
-	bool dashReady = true; 
+    [Header("Dash Param")]
+    [SerializeField]
+    float dashSpeedIncrease = 25;
+    [SerializeField] float dashCooldown = 2;
+    [SerializeField] float dashDuration = 1;
+    bool dashReady = true;
     #endregion
 
     //LE SPAWN EST CALL DANS LE DEBUG START
@@ -47,7 +51,7 @@ public class PlayerSnake : Player
     {
         if (isDebug)
             Spawn(1, new PlayerGameControllerInput(this));
-	
+
     }
     void UpdatePositionSphere()
     {
@@ -63,12 +67,8 @@ public class PlayerSnake : Player
         {
             PInput.FixedUpdate();
             MoveSteer(PInput.XY);
-            PressActionButton();
-
+            UpdateSpeed();
             UpdateTail();
-
-            //Debug
-			//Debug.Log("Player id : " + ID + " control type " + PInput.InputType);
             UpdatePositionSphere();
             if (Input.GetKeyDown(KeyCode.X))
                 AddTailPart();
@@ -81,32 +81,39 @@ public class PlayerSnake : Player
         ID = id;
         transform.SetPositionSphere(Dome.instance.radiusClose);
         PInput = playerInput;
+        PInput.OnPressActionButton.AddListener(PressActionButton);
     }
 
     public override void PressActionButton()
     {
-		if(currentSpeed > moveSpeed)
-			currentSpeed -= (dashSpeedIncrease / dashDuration) * Time.deltaTime;
-		else
-			currentSpeed = moveSpeed;
-
-		//TRISTAN
-		if(Input.GetButtonDown("Shoot"+ID) && dashReady)
-			Dash();
+        Dash();
     }
 
-	void Dash()
-	{
-		currentSpeed = moveSpeed + dashSpeedIncrease;
-		StartCoroutine(DashCoolDownDelay());
-	}
+    private void UpdateSpeed()
+    {
+        if (currentSpeed > moveSpeed)
+            currentSpeed -= (dashSpeedIncrease / dashDuration) * Time.deltaTime;
+        else
+            currentSpeed = moveSpeed;
+    }
 
-	IEnumerator DashCoolDownDelay()
-	{
-		dashReady = false;
-		yield return new WaitForSeconds(dashCooldown);
-		dashReady = true;
-	}
+    void Dash()
+    {
+        if (dashReady)
+        {
+            Debug.Log("Dash");
+            currentSpeed = moveSpeed + dashSpeedIncrease;
+            StartCoroutine(DashCoolDownDelay());
+        }
+
+    }
+
+    IEnumerator DashCoolDownDelay()
+    {
+        dashReady = false;
+        yield return new WaitForSeconds(dashCooldown);
+        dashReady = true;
+    }
     override public void MoveSteer(Vector2 dir)
     {
         previousDirection = currentDirection;
@@ -117,10 +124,10 @@ public class PlayerSnake : Player
 
         spriteTransform.RotateWithDirection(currentDirection, 25);
         //transform.MoveSphere(spriteTransform.right, moveSpeed * Time.fixedDeltaTime);
-		transform.MoveSphere(spriteTransform.right, currentSpeed * Time.fixedDeltaTime);
+        transform.MoveSphere(spriteTransform.right, currentSpeed * Time.fixedDeltaTime);
     }
 
-	//Currently disabled
+    //Currently disabled
     void SetVelocity(Vector2 dir)
     {
         //Y input = speed
@@ -145,10 +152,10 @@ public class PlayerSnake : Player
         if (tailList.Count == 0)
             return;
 
-		//Move first tail part with the head
+        //Move first tail part with the head
         MoveTailLerp(transform, spriteTransform, tailList[0], 0);
 
-		//Move everyother tail part
+        //Move everyother tail part
         for (int i = tailList.Count - 1; i > 0; i--)
         {
             TailPart prevTail = tailList[i - 1];
@@ -161,12 +168,12 @@ public class PlayerSnake : Player
     {
         Vector3 deltaPos = prevTail.position - currentTail.tr.position;
         currentTail.tr.position = Vector3.MoveTowards(
-								currentTail.tr.position,
+                                currentTail.tr.position,
                                 prevTail.position - deltaPos.normalized * tailDistance,
-								Time.fixedDeltaTime * currentSpeed * 2);
-		
-		currentTail.tr.rotation = Quaternion.LookRotation(deltaPos,currentTail.tr.up);
-        currentTail.tr.SetPositionSphere(Dome.instance.radiusClose);		
+                                Time.fixedDeltaTime * currentSpeed * 2);
+
+        currentTail.tr.rotation = Quaternion.LookRotation(deltaPos, currentTail.tr.up);
+        currentTail.tr.SetPositionSphere(Dome.instance.radiusClose);
     }
 
     public void AddTailPart()
@@ -186,7 +193,7 @@ public class PlayerSnake : Player
             );
     }
 
-	///SpriteTR maybe useless
+    ///SpriteTR maybe useless
     [System.Serializable]
     class TailPart
     {

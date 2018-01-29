@@ -32,12 +32,18 @@ public class NetworkObjectManager : NetworkBehaviour
     [Command]
     public void CmdSendVectorData(Vector3 _data)
     {
-        Debug.Log(_data + "," + connectionToClient.connectionId);
         Player.GetComponent<Player>().PInput.Set(_data.x, _data.y);
     }
 
     [Command]
-    public void CmdSendStringrData(string _data)
+    public void CmdPressActionButton()
+    {
+        Debug.Log("received");
+        Player.GetComponent<Player>().PInput.PressActionButton();
+    }
+
+    [Command]
+    public void CmdSendStringData(string _data)
     {
 
     }

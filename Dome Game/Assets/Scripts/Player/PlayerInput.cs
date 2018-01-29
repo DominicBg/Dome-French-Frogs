@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public abstract class PlayerInput
@@ -11,6 +12,19 @@ public abstract class PlayerInput
     public Vector2 XY { get { return new Vector2(X, Y); } }
     public Player Owner { protected set; get; }
     public EInputType InputType { protected set; get; }
+
+
+    public UnityEvent OnPressActionButton;
+
+    public abstract bool IsPressingActionButton();
+
+    public void PressActionButton()
+    {
+        if (IsPressingActionButton())
+            OnPressActionButton.Invoke();
+    }
+
+
 
     public abstract void FixedUpdate();
 
@@ -25,6 +39,7 @@ public abstract class PlayerInput
         X = 0;
         Y = 0;
         Owner = owner;
+        OnPressActionButton = new UnityEvent();
     }
 
 
@@ -43,6 +58,11 @@ public class PlayerNetworkInput : PlayerInput
     {
 
     }
+
+    public override bool IsPressingActionButton()
+    {
+        return true;
+    }
 }
 
 public class PlayerGameControllerInput : PlayerInput
@@ -55,7 +75,13 @@ public class PlayerGameControllerInput : PlayerInput
 
     public override void FixedUpdate()
     {
+        PressActionButton();
         Set(Input.GetAxis("Horizontal" + Owner.ID), Input.GetAxis("Vertical" + Owner.ID));
+    }
+
+    public override bool IsPressingActionButton()
+    {
+        return Input.GetButtonDown("Shoot" + Owner.ID);
     }
 }
 

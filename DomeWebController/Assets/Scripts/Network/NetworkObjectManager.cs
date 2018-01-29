@@ -33,9 +33,15 @@ public class NetworkObjectManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSendStringrData(string _data)
+    public void CmdSendStringData(string _data)
     {
 
+    }
+
+    [Command]
+    public void CmdPressActionButton()
+    {
+       
     }
 
 
