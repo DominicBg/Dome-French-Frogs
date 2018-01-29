@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
-public abstract class PlayerInput  {
+public abstract class PlayerInput
+{
 
     public float X { protected set; get; }
     public float Y { protected set; get; }
     public Vector2 XY { get { return new Vector2(X, Y); } }
     public Player Owner { protected set; get; }
+    public EInputType InputType { protected set; get; }
 
     public abstract void FixedUpdate();
 
@@ -34,12 +35,13 @@ public class PlayerNetworkInput : PlayerInput
 
     public PlayerNetworkInput(Player owner) : base(owner)
     {
+        InputType = EInputType.NETWORK;
 
     }
 
     public override void FixedUpdate()
     {
-        
+
     }
 }
 
@@ -48,7 +50,7 @@ public class PlayerGameControllerInput : PlayerInput
 
     public PlayerGameControllerInput(Player owner) : base(owner)
     {
-
+        InputType = EInputType.GAMECONTROLLER;
     }
 
     public override void FixedUpdate()

@@ -5,8 +5,22 @@ using UnityEngine.Networking;
 
 public class PlayerController : Singleton<PlayerController>
 {
-    public GameObject PlayerPrefab;
-    public List<Player> PlayerList { private set; get; }
+
+    [Header("Spawn Parameters")]
+
+    [SerializeField]
+    private GameObject PlayerPrefab;
+    [SerializeField]
+    private Transform spawnZone;
+
+    [Header("Player Parameters")]
+
+    [SerializeField]
+    private int NbMaxPlayers = 32;
+
+    [SerializeField]
+    private List<Player> PlayerList;
+
 
     public int PlayerCount
     {
@@ -16,42 +30,38 @@ public class PlayerController : Singleton<PlayerController>
         }
     }
 
-    public Transform spawnZone;
-
 
     public GameObject InstantiatePlayer()
     {
-        return InstantiatePlayer( PlayerCount + 1, false);
+        return InstantiatePlayer(PlayerCount + 1, EInputType.GAMECONTROLLER);
     }
 
     public GameObject InstantiatePlayer(NetworkInstanceId netId)
     {
-        return InstantiatePlayer((int)netId.Value, true);
+        return InstantiatePlayer((int)netId.Value, EInputType.NETWORK);
     }
 
-    public GameObject InstantiatePlayer(int id, bool isNetworkInput)
+    public GameObject InstantiatePlayer(int id, EInputType inputType)
     {
         if (PlayerList == null)
             PlayerList = new List<Player>();
 
         GameObject PlayerGameObject = Instantiate(PlayerPrefab, spawnZone.transform.position, Quaternion.identity) as GameObject;
+
         Player newPlayer = PlayerGameObject.GetComponent<Player>();
 
-        PlayerInput p;
-        if (isNetworkInput)
-            p = new PlayerNetworkInput(newPlayer);
-        else
-            p = new PlayerGameControllerInput(newPlayer);
+        PlayerInput pInput = PlayerInputFactory.GetInput(inputType, newPlayer);
 
+        newPlayer.Spawn(id, pInput);
 
-        newPlayer.Spawn(id,p);
         PlayerList.Add(newPlayer);
+
         return PlayerGameObject;
     }
 
 
 
-   
+
 
 
 

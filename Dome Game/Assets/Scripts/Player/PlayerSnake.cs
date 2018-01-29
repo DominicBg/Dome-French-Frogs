@@ -8,7 +8,7 @@ public class PlayerSnake : Player
     #region Variables
 
     [Header("Debug")]
-    public bool isDebug = true;
+    public bool isDebug = false;
 
     [Header("Components")]
     [SerializeField]
@@ -55,23 +55,27 @@ public class PlayerSnake : Player
 
     public override void FixedUpdate()
     {
-        PInput.FixedUpdate();
-        Debug.Log(PInput.XY);
-        MoveSteer(PInput.XY);
-        PressActionButton();
-        UpdateTail();
+        if (PInput != null)
+        {
+            PInput.FixedUpdate();
+            Debug.Log(PInput.InputType);
+            MoveSteer(PInput.XY);
+            PressActionButton();
+            UpdateTail();
 
-        //Debug
-        UpdatePositionSphere();
-        if (Input.GetKeyDown(KeyCode.X))
-            AddTailPart();
+            //Debug
+            UpdatePositionSphere();
+            if (Input.GetKeyDown(KeyCode.X))
+                AddTailPart();
+        }
+
     }
 
-    public override void Spawn(int id, PlayerInput inputType)
+    public override void Spawn(int id, PlayerInput playerInput)
     {
         ID = id;
         transform.SetPositionSphere(Dome.instance.radiusClose);
-        PInput = new PlayerGameControllerInput(this);
+        PInput = playerInput;
     }
 
     public override void PressActionButton()
