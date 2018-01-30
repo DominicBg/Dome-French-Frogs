@@ -52,7 +52,7 @@ public class PlayerSnake : Player
     void Start()
     {
         if (isDebug)
-            Spawn(1, new PlayerGameControllerInput(this));
+            Spawn(1, new PlayerGameControllerInput(this), "testmonsieur");
 
     }
     void UpdatePositionSphere()
@@ -78,11 +78,12 @@ public class PlayerSnake : Player
 
     }
 
-    public override void Spawn(int id, PlayerInput playerInput)
+    public override void Spawn(int id, PlayerInput playerInput, string name)
     {
         ID = id;
         transform.SetPositionSphere(Dome.instance.radiusClose);
         PInput = playerInput;
+        Name = name;
         PInput.OnPressActionButton.AddListener(PressActionButton);
     }
 

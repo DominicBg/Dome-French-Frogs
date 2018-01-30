@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 
 public class PlayerController : Singleton<PlayerController>
@@ -21,14 +22,24 @@ public class PlayerController : Singleton<PlayerController>
     [SerializeField]
     private List<Player> PlayerList;
 
-
-    private static PlayerController instance;
-    public static PlayerController GetInstance() { return instance; }
-
-    void Start()
+    public static List<Player> GetPlayerListByScore
     {
-        instance = this;
+        get
+        {
+            List<Player> SortedList = GetPlayerList;
+            SortedList.Sort();
+            return SortedList;
+        }
+       
+
     }
+
+    public static List<Player> GetPlayerList
+    {
+        get { return Instance.PlayerList; }
+    }
+
+   
 
     public int PlayerCount
     {
@@ -38,10 +49,9 @@ public class PlayerController : Singleton<PlayerController>
         }
     }
 
-    public List<Player> GetPlayerList()
-    {
-        return PlayerList;
-    }
+    public static UnityPlayerEvent OnInstantiatePlayer = new UnityPlayerEvent(), 
+        OnRemovePlayer = new UnityPlayerEvent();
+
 
     public void TestSpawn()
     {
@@ -69,11 +79,19 @@ public class PlayerController : Singleton<PlayerController>
 
         PlayerInput pInput = PlayerInputFactory.GetInput(inputType, newPlayer);
 
-        newPlayer.Spawn(id, pInput);
-        GameController.GetInstance().InstanciateNewScore(newPlayer);
+        newPlayer.Spawn(id, pInput, "TestMonsieur" + PlayerCount.ToString());
+
         PlayerList.Add(newPlayer);
 
+        OnInstantiatePlayer.Invoke(newPlayer);
+
         return PlayerGameObject;
+    }
+
+    public static void RemovePlayer(Player removedPlayer)
+    {
+        GetPlayerList.Remove(removedPlayer);
+        OnRemovePlayer.Invoke(removedPlayer);
     }
 
 

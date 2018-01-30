@@ -1,15 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Player : MonoBehaviour   {
+public class Player : MonoBehaviour, IComparable<Player>   {
 
     public int ID { protected set; get; }
-    public PlayerInput PInput { protected set; get; }
-    public PlayerScore scoreRef;
 
-    public virtual void Spawn(int id, PlayerInput inputType){
+    public string Name { protected set; get; }
+
+    public int Score { protected set; get; }
+
+    public PlayerInput PInput { protected set; get; }
+
+
+    public virtual void Spawn(int id, PlayerInput inputType, string Name){
 
     }
 
@@ -40,6 +46,8 @@ public class Player : MonoBehaviour   {
 
         }
 
+        
+
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("coucoiu2");
@@ -47,23 +55,25 @@ public class Player : MonoBehaviour   {
             p.Death();
             Death();
         }
+
+        
     }
 
     public void Kill()
     {
-        scoreRef.GainPoints();
-        GameController.GetInstance().SetHighScore();
+        Score++;
+        ScoreController.SetHighScore();
 
     }
 
     public virtual void Death()
     {
-        PlayerController.GetInstance().GetPlayerList().Remove(this);
-
-        GameController.GetInstance().RemoveScore(scoreRef);
+        PlayerController.RemovePlayer(this);
         Destroy(gameObject);
     }
 
-
-
+    public int CompareTo(Player other)
+    {
+        return Score.CompareTo(other.Score);
+    }
 }

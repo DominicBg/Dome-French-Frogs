@@ -5,29 +5,31 @@ using UnityEngine.UI;
 
 public class PlayerScore : MonoBehaviour {
 
-    public int currentScore;
     public Text playerNameTxt, scoreText;
+
+    public Player CurrentPlayer { private set; get; }
  
-    public bool isLeading;
+  
 
 	// Use this for initialization
 	void Start () {
         gameObject.SetActive(true);
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-    public void SetValues(string name)
+    public void SetName()
     {
-        playerNameTxt.text = name;
+        playerNameTxt.text = CurrentPlayer.Name;
     }
 
-    public void GainPoints()
+    public void SetScore()
     {
-        currentScore++;
-        scoreText.text = currentScore.ToString();
+        scoreText.text = CurrentPlayer.Score.ToString();
+    }
+
+    public void SetPlayer(Player p)
+    {
+        CurrentPlayer = p;
+        SetName();
+        SetScore();
     }
 }
