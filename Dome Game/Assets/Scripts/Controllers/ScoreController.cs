@@ -11,7 +11,7 @@ public class ScoreController : Singleton<ScoreController>
     PlayerScore prefabScore;
 
     [SerializeField]
-    int highestScore;
+    int highestScore, nbScores = 10;
 
     [SerializeField]
     Text highScoreText;
@@ -46,9 +46,7 @@ public class ScoreController : Singleton<ScoreController>
                 Leaderboard.Remove(Leaderboard[i]);
                 Destroy(RemovedPlayerScore.gameObject);
             }
-
         }
-
     }
 
 
@@ -69,6 +67,30 @@ public class ScoreController : Singleton<ScoreController>
             Leaderboard[i].SetPlayer(ScoreList[i]);
         }
 
+        SetLeaderboard();
+    }
+
+    public static void SetLeaderboard()
+    {
+       if (Leaderboard.Count > Instance.nbScores)
+        {
+            float allscores = 0;
+            for (int i = 0; i < Leaderboard.Count; i++)
+            {
+                allscores += Leaderboard[i].CurrentPlayer.Score;
+            }
+
+            float sum = allscores / Leaderboard.Count;
+
+            for (int i = 0; i < Leaderboard.Count; i++)
+            {
+                if (Leaderboard[i].CurrentPlayer.Score < sum)
+                    Leaderboard[i].gameObject.SetActive(false);
+                else
+                    Leaderboard[i].gameObject.SetActive(true);
+            }
+        }
+      
     }
 
 }

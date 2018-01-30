@@ -43,11 +43,7 @@ public class Player : MonoBehaviour, IComparable<Player>   {
             }
             else
                 Death();
-
         }
-
-        
-
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("coucoiu2");
@@ -55,8 +51,6 @@ public class Player : MonoBehaviour, IComparable<Player>   {
             p.Death();
             Death();
         }
-
-        
     }
 
     public void Kill()
