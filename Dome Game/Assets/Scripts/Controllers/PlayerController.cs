@@ -22,6 +22,14 @@ public class PlayerController : Singleton<PlayerController>
     private List<Player> PlayerList;
 
 
+    private static PlayerController instance;
+    public static PlayerController GetInstance() { return instance; }
+
+    void Start()
+    {
+        instance = this;
+    }
+
     public int PlayerCount
     {
         get
@@ -30,6 +38,15 @@ public class PlayerController : Singleton<PlayerController>
         }
     }
 
+    public List<Player> GetPlayerList()
+    {
+        return PlayerList;
+    }
+
+    public void TestSpawn()
+    {
+        InstantiatePlayer();
+    }
 
     public GameObject InstantiatePlayer()
     {
@@ -53,7 +70,7 @@ public class PlayerController : Singleton<PlayerController>
         PlayerInput pInput = PlayerInputFactory.GetInput(inputType, newPlayer);
 
         newPlayer.Spawn(id, pInput);
-
+        GameController.GetInstance().InstanciateNewScore(newPlayer);
         PlayerList.Add(newPlayer);
 
         return PlayerGameObject;

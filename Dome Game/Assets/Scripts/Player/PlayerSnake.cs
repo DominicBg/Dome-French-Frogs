@@ -17,7 +17,7 @@ public class PlayerSnake : Player
 
     [Header("Prefabs")]
     [SerializeField]
-    GameObject tailPrefab;
+    PlayerTail tailPrefab;
 
     [Header("Param")]
     [SerializeField]
@@ -34,6 +34,8 @@ public class PlayerSnake : Player
     Vector2 velocity;
     Vector2 previousDirection;
     [SerializeField] List<TailPart> tailList = new List<TailPart>();
+    [SerializeField]
+    List<PlayerTail> tailsPrefabs = new List<PlayerTail>();
 
     [Header("Dash Param")]
     [SerializeField]
@@ -184,27 +186,52 @@ public class PlayerSnake : Player
         else
             tailPos = tailList[tailList.Count - 1].tr.position - tailList[tailList.Count - 1].spriteTr.up * tailDistance;
 
-        GameObject tailPart = Instantiate(tailPrefab, tailPos, transform.rotation);
+        PlayerTail tailPart = Instantiate(tailPrefab, tailPos, transform.rotation);
         tailPart.transform.SetPositionSphere(Dome.instance.radiusClose);
         tailPart.transform.rotation = transform.rotation;
+        
 
         tailList.Add(
-            new TailPart(tailPart.transform, tailPart.transform.GetChild(0), currentDirection)
+            new TailPart(tailPart.transform, tailPart.transform.GetChild(0), currentDirection, true)
             );
+        tailPart.isLast = true;
+        tailsPrefabs.Add(tailPart);
+
+        if (tailsPrefabs.Count > 1)
+            tailsPrefabs[tailsPrefabs.Count - 2].isLast = false;
+
+
+        if (tailList.Count > 1)
+            tailList[tailList.Count - 2].isLastTail = false;
+
+    }
+
+    public override void Death()
+    {
+        foreach(PlayerTail tail in tailsPrefabs)
+        {
+            Destroy(tail.gameObject);
+        }
+        tailsPrefabs.Clear();
+        tailList.Clear();
+
+        base.Death();
     }
 
     ///SpriteTR maybe useless
     [System.Serializable]
     class TailPart
     {
-        public TailPart(Transform tr, Transform spriteTr, Vector3 direction)
+        public TailPart(Transform tr, Transform spriteTr, Vector3 direction, bool last)
         {
             this.tr = tr;
             this.spriteTr = spriteTr;
             this.direction = direction;
+            this.isLastTail = last;
         }
         public Transform tr;
         public Transform spriteTr;
         public Vector3 direction;
+        public bool isLastTail;
     }
 }
