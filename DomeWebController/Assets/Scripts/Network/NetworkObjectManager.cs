@@ -17,15 +17,25 @@ public class NetworkObjectManager : NetworkBehaviour
     public void Start()
     {
         ID = netId.Value;
+
+        JoystickScript.OnChangeJoystick.AddListener(
+
+            (Vector2 JoystickInput) =>
+            {
+                if (isLocalPlayer)
+                    CmdSendVectorData(JoystickInput);
+            }
+
+            );
+
     }
 
     public void FixedUpdate()
     {
-        if(isLocalPlayer)
-            CmdSendVectorData(netId.Value * new Vector3(0.5f, 0.3f, 0));
+
     }
 
- 
+
     [Command]
     public void CmdSendVectorData(Vector3 _data)
     {
@@ -41,7 +51,7 @@ public class NetworkObjectManager : NetworkBehaviour
     [Command]
     public void CmdPressActionButton()
     {
-       
+
     }
 
 
