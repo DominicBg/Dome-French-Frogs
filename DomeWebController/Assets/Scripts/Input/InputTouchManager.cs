@@ -8,6 +8,10 @@ public class InputTouchManager : MonoBehaviour
 {
 
     public Button ActionButton;
+    public JoystickScript JoyStick;
+
+
+    
 
 
     // Use this for initialization
