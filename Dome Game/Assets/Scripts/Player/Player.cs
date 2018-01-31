@@ -29,35 +29,10 @@ public class Player : MonoBehaviour, IComparable<Player>   {
 
     }
 
-    void OnCollisionEnter(Collision other)
-    {
-        if(other.gameObject.tag == "Tail")
-        {
-            Debug.Log("coucoiu");
-            PlayerTail tail = other.gameObject.GetComponent<PlayerTail>();
-
-            if (tail.isLast)
-            {
-               Kill();
-               tail.playerRef.Death();
-            }
-            else
-                Death();
-        }
-        if (other.gameObject.tag == "Player")
-        {
-            Debug.Log("coucoiu2");
-            PlayerSnake p = other.gameObject.GetComponent<PlayerSnake>();
-            p.Death();
-            Death();
-        }
-    }
-
     public void Kill()
     {
         Score++;
         ScoreController.SetHighScore();
-
     }
 
     public virtual void Death()

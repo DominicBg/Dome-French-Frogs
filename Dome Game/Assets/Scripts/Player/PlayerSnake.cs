@@ -11,35 +11,31 @@ public class PlayerSnake : Player
     public bool isDebug = false;
 
     [Header("Components")]
-    [SerializeField]
-    SpriteRenderer spriteRenderer;
+    [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Transform spriteTransform;
+	Transform emptyParent;
 
     [Header("Prefabs")]
     [SerializeField]
     PlayerTail tailPrefab;
 
     [Header("Param")]
-    [SerializeField]
-    float tailDistance = 5;
+    [SerializeField] float tailDistance = 5;
 
     [SerializeField] float moveSpeed = 25;
     [SerializeField] float rotationSpeed = 5;
-    [SerializeField] float friction = 5;
-    [SerializeField] float acceleration = 10f;
-    [SerializeField] float maxVelocity = 10;
+    //[SerializeField] float friction = 5;
+    //[SerializeField] float acceleration = 10f;
+    //[SerializeField] float maxVelocity = 10;
 
     float currentSpeed;
     Vector2 currentDirection = Vector2.one;
-    Vector2 velocity;
-    Vector2 previousDirection;
-    [SerializeField] List<TailPart> tailList = new List<TailPart>();
-    [SerializeField]
-    List<PlayerTail> tailsPrefabs = new List<PlayerTail>();
+    //Vector2 velocity;
+    //Vector2 previousDirection;
+    [SerializeField] List<PlayerTail> tailList = new List<PlayerTail>();
 
     [Header("Dash Param")]
-    [SerializeField]
-    float dashSpeedIncrease = 25;
+    [SerializeField] float dashSpeedIncrease = 25;
     [SerializeField] float dashCooldown = 2;
     [SerializeField] float dashDuration = 1;
     bool dashReady = true;
@@ -52,8 +48,7 @@ public class PlayerSnake : Player
     void Start()
     {
         if (isDebug)
-            Spawn(1, new PlayerGameControllerInput(this), "testmonsieur");
-
+        	Spawn(1, new PlayerGameControllerInput(this), "testmonsieur");
     }
     void UpdatePositionSphere()
     {
@@ -75,7 +70,6 @@ public class PlayerSnake : Player
             if (Input.GetKeyDown(KeyCode.X))
                 AddTailPart();
         }
-
     }
 
     public override void Spawn(int id, PlayerInput playerInput, string name)
@@ -85,6 +79,9 @@ public class PlayerSnake : Player
         PInput = playerInput;
         Name = name;
         PInput.OnPressActionButton.AddListener(PressActionButton);
+
+		emptyParent = new GameObject("Player" + ID).transform;
+		transform.SetParent(emptyParent,false);
     }
 
     public override void PressActionButton()
@@ -104,11 +101,9 @@ public class PlayerSnake : Player
     {
         if (dashReady)
         {
-            Debug.Log("Dash");
             currentSpeed = moveSpeed + dashSpeedIncrease;
             StartCoroutine(DashCoolDownDelay());
         }
-
     }
 
     IEnumerator DashCoolDownDelay()
@@ -119,18 +114,15 @@ public class PlayerSnake : Player
     }
     override public void MoveSteer(Vector2 dir)
     {
-        previousDirection = currentDirection;
         //X input = rotation
         currentDirection = GameMath.RotateVector(-dir.x * Time.fixedDeltaTime * rotationSpeed * 10, currentDirection);
         currentDirection.Normalize();
-        //SetVelocity(currentDirection);
-
         spriteTransform.RotateWithDirection(currentDirection, 25);
-        //transform.MoveSphere(spriteTransform.right, moveSpeed * Time.fixedDeltaTime);
         transform.MoveSphere(spriteTransform.right, currentSpeed * Time.fixedDeltaTime);
     }
 
-    //Currently disabled
+	/*
+    Currently disabled
     void SetVelocity(Vector2 dir)
     {
         //Y input = speed
@@ -150,33 +142,34 @@ public class PlayerSnake : Player
                 velocity = velocity.normalized * maxVelocity;
         }
     }
+	*/
     void UpdateTail()
     {
         if (tailList.Count == 0)
             return;
 
         //Move first tail part with the head
-        MoveTailLerp(transform, spriteTransform, tailList[0], 0);
+        MoveTailLerp(transform, tailList[0].transform);
 
         //Move everyother tail part
         for (int i = tailList.Count - 1; i > 0; i--)
         {
-            TailPart prevTail = tailList[i - 1];
-            TailPart currentTail = tailList[i];
-            MoveTailLerp(prevTail.tr, prevTail.spriteTr, currentTail, i);
+			Transform prevTail = tailList[i - 1].transform;
+			Transform currentTail = tailList[i].transform;
+            MoveTailLerp(prevTail, currentTail);
         }
     }
 
-    void MoveTailLerp(Transform prevTail, Transform prevSpriteTransform, TailPart currentTail, int i)
+	void MoveTailLerp(Transform prevTail, Transform currentTail)
     {
-        Vector3 deltaPos = prevTail.position - currentTail.tr.position;
-        currentTail.tr.position = Vector3.MoveTowards(
-                                currentTail.tr.position,
+        Vector3 deltaPos = prevTail.position - currentTail.position;
+        currentTail.position = Vector3.MoveTowards(
+                                currentTail.position,
                                 prevTail.position - deltaPos.normalized * tailDistance,
                                 Time.fixedDeltaTime * currentSpeed * 2);
 
-        currentTail.tr.rotation = Quaternion.LookRotation(deltaPos, currentTail.tr.up);
-        currentTail.tr.SetPositionSphere(Dome.instance.radiusClose);
+        currentTail.rotation = Quaternion.LookRotation(deltaPos, currentTail.up);
+        currentTail.SetPositionSphere(Dome.instance.radiusClose);
     }
 
     public void AddTailPart()
@@ -185,54 +178,56 @@ public class PlayerSnake : Player
         if (tailList.Count == 0)
             tailPos = transform.position - spriteTransform.up * tailDistance;
         else
-            tailPos = tailList[tailList.Count - 1].tr.position - tailList[tailList.Count - 1].spriteTr.up * tailDistance;
+            tailPos = tailList[tailList.Count - 1].transform.position - tailList[tailList.Count - 1].transform.up * tailDistance;
 
         PlayerTail tailPart = Instantiate(tailPrefab, tailPos, transform.rotation);
         tailPart.transform.SetPositionSphere(Dome.instance.radiusClose);
         tailPart.transform.rotation = transform.rotation;
         
-
-        tailList.Add(
-            new TailPart(tailPart.transform, tailPart.transform.GetChild(0), currentDirection, true)
-            );
         tailPart.isLast = true;
-        tailsPrefabs.Add(tailPart);
+		tailPart.playerRef = this;
 
-        if (tailsPrefabs.Count > 1)
-            tailsPrefabs[tailsPrefabs.Count - 2].isLast = false;
-
-
+		tailList.Add(tailPart);	
         if (tailList.Count > 1)
-            tailList[tailList.Count - 2].isLastTail = false;
+            tailList[tailList.Count - 2].isLast = false;
 
+		tailPart.transform.SetParent(emptyParent,false);
     }
 
     public override void Death()
     {
-        foreach(PlayerTail tail in tailsPrefabs)
+		base.Death();
+
+		/* On destroy le parent instead
+		foreach(PlayerTail tail in tailList)
         {
             Destroy(tail.gameObject);
         }
-        tailsPrefabs.Clear();
         tailList.Clear();
+		 */
 
-        base.Death();
+		Destroy(emptyParent.gameObject);
     }
 
-    ///SpriteTR maybe useless
-    [System.Serializable]
-    class TailPart
-    {
-        public TailPart(Transform tr, Transform spriteTr, Vector3 direction, bool last)
-        {
-            this.tr = tr;
-            this.spriteTr = spriteTr;
-            this.direction = direction;
-            this.isLastTail = last;
-        }
-        public Transform tr;
-        public Transform spriteTr;
-        public Vector3 direction;
-        public bool isLastTail;
-    }
+	void OnCollisionEnter(Collision other)
+	{
+		if(other.gameObject.CompareTag("Tail"))
+		{
+			PlayerTail tail = other.gameObject.GetComponent<PlayerTail>();
+			
+			if (tail.isLast)
+			{
+				Kill();
+				tail.playerRef.Death();
+			}
+			else
+				Death();
+		}
+		if (other.gameObject.CompareTag("Player"))
+		{
+			PlayerSnake p = other.gameObject.GetComponent<PlayerSnake>();
+			p.Death();
+			Death();
+		}
+	}
 }
