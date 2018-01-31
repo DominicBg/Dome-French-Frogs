@@ -21,11 +21,39 @@ public class ScoreController : Singleton<ScoreController>
 
     public static List<PlayerScore> Leaderboard { private set; get; }
 
+    public static string LeaderboardString
+    {
+        get
+        {
+            string s = "";
+
+            for (int i = 0; i < Leaderboard.Count;i++)
+            {
+                Debug.Log(Leaderboard[i].CurrentPlayer.ID);
+                Debug.Log(Leaderboard[i].CurrentPlayer.Score);
+                s += (Leaderboard[i].CurrentPlayer.ID + '.' + Leaderboard[i].CurrentPlayer.Score);
+            }
+
+            return s;
+
+        }
+    }
+
     private void Start()
     {
         Leaderboard = new List<PlayerScore>();
         PlayerController.OnInstantiatePlayer.AddListener(InstantiateScore);
         PlayerController.OnRemovePlayer.AddListener(RemoveScore);
+
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.U))
+        {
+            Debug.Log(LeaderboardString);
+            Debug.Log(System.Text.ASCIIEncoding.Unicode.GetByteCount(LeaderboardString));
+        }
     }
 
     void InstantiateScore(Player player)
@@ -40,7 +68,7 @@ public class ScoreController : Singleton<ScoreController>
     {
         for (int i = 0; i < Leaderboard.Count; i++)
         {
-            if (Leaderboard[i].CurrentPlayer.Name == player.Name)
+            if (Leaderboard[i].CurrentPlayer.ID.Equals(player.ID))
             {
                 PlayerScore RemovedPlayerScore = Leaderboard[i];
                 Leaderboard.Remove(Leaderboard[i]);
@@ -72,7 +100,7 @@ public class ScoreController : Singleton<ScoreController>
 
     public static void SetLeaderboard()
     {
-       if (Leaderboard.Count > Instance.nbScores)
+        if (Leaderboard.Count > Instance.nbScores)
         {
             float allscores = 0;
             for (int i = 0; i < Leaderboard.Count; i++)
@@ -90,7 +118,7 @@ public class ScoreController : Singleton<ScoreController>
                     Leaderboard[i].gameObject.SetActive(true);
             }
         }
-      
+
     }
 
 }

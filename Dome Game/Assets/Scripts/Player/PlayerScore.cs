@@ -32,4 +32,6 @@ public class PlayerScore : MonoBehaviour {
         SetName();
         SetScore();
     }
+
+  
 }
