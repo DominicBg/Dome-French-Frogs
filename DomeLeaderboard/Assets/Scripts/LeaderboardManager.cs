@@ -20,7 +20,14 @@ public class LeaderboardManager : MonoBehaviour
         //Get Leaderboard array from leaderboard
         StartCoroutine(WWWUtility.GetLeaderboard(new DateTime(2017,1,1), GetLeaderboard));
 
-    */
+      */
+
+        //Perform Custom MYSQL Query
+        StartCoroutine(WWWUtility.ExecuteCustomMYSQLQuery("DELETE FROM `dome_db`")); 
+
+
+
+
     }
 
     void GetLeaderboard(LeaderboardNodeJS Leaderboard)
