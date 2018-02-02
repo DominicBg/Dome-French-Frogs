@@ -91,10 +91,22 @@ public class PlayerSnake : Player
 
     private void UpdateSpeed()
     {
-        if (currentSpeed > moveSpeed)
-            currentSpeed -= (dashSpeedIncrease / dashDuration) * Time.deltaTime;
-        else
-            currentSpeed = moveSpeed;
+		if (PInput.Y < 0) {
+			currentSpeed = Mathf.Lerp (25, 10, Mathf.Abs (PInput.Y));
+		} 
+		else {
+			currentSpeed = 25;
+		}
+		/*
+		if (currentSpeed > moveSpeed)
+			currentSpeed -= (dashSpeedIncrease / dashDuration) * Time.deltaTime;
+		else
+		{
+			currentSpeed += (PInput.Y * Time.deltaTime);
+			currentSpeed = Mathf.Clamp (currentSpeed, 10, 30);
+		}
+		*/
+
     }
 
     void Dash()
