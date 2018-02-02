@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class InputTouchManager : MonoBehaviour
 {
 
-    public Button ActionButton;
+    public Button ActionButtonLeft,ActionButtonTop;
     public JoystickScript JoyStick;
 
 
@@ -17,14 +17,21 @@ public class InputTouchManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        ActionButton.onClick.AddListener(PressActionButton);
+        ActionButtonLeft.onClick.AddListener(PressActionButtonLeft);
+        ActionButtonTop.onClick.AddListener(PressActionButtonTop);
     }
 
 
 
-    public void PressActionButton()
+    public void PressActionButtonLeft()
     {
         if (DomeNetworkManager.GetNetworkClient() != null)
-            DomeNetworkManager.GetNetworkClient().CmdPressActionButton();
+            DomeNetworkManager.GetNetworkClient().CmdPressActionButtonLeft();
+    }
+
+    public void PressActionButtonTop()
+    {
+        if (DomeNetworkManager.GetNetworkClient() != null)
+            DomeNetworkManager.GetNetworkClient().CmdPressActionButtonTop();
     }
 }

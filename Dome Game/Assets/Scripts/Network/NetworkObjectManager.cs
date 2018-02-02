@@ -36,10 +36,17 @@ public class NetworkObjectManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdPressActionButton()
+    public void CmdPressActionButtonLeft()
     {
         Debug.Log("received");
-        Player.GetComponent<Player>().PInput.PressActionButton();
+        Player.GetComponent<Player>().PInput.LeftActionButton.Press();
+    }
+
+    [Command]
+    public void CmdPressActionButtonTop()
+    {
+        Debug.Log("received");
+        Player.GetComponent<Player>().PInput.TopActionButton.Press();
     }
 
     [Command]

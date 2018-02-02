@@ -22,7 +22,7 @@ public class Player : MonoBehaviour, IComparable<Player>   {
 
     protected virtual void Move(Vector2 dir) { }
     public virtual void MoveSteer(Vector2 dir) { }
-    public virtual void PressActionButton() { }
+
 
     public virtual void FixedUpdate() {
 

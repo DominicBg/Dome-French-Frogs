@@ -13,18 +13,8 @@ public abstract class PlayerInput
     public Player Owner { protected set; get; }
     public EInputType InputType { protected set; get; }
 
-
-    public UnityEvent OnPressActionButton;
-
-    public abstract bool IsPressingActionButton();
-
-    public void PressActionButton()
-    {
-        if (IsPressingActionButton())
-            OnPressActionButton.Invoke();
-    }
-
-
+    public InputActionButton TopActionButton { protected set; get; }
+    public InputActionButton LeftActionButton { protected set; get; }
 
     public abstract void FixedUpdate();
 
@@ -39,7 +29,6 @@ public abstract class PlayerInput
         X = 0;
         Y = 0;
         Owner = owner;
-        OnPressActionButton = new UnityEvent();
     }
 
 
@@ -51,7 +40,8 @@ public class PlayerNetworkInput : PlayerInput
     public PlayerNetworkInput(Player owner) : base(owner)
     {
         InputType = EInputType.NETWORK;
-
+        TopActionButton = new ActionButtonTopNetwork(owner.ID);
+        LeftActionButton = new ActionButtonLeftNetwork(owner.ID);
     }
 
     public override void FixedUpdate()
@@ -59,29 +49,25 @@ public class PlayerNetworkInput : PlayerInput
 
     }
 
-    public override bool IsPressingActionButton()
-    {
-        return true;
-    }
 }
 
 public class PlayerGameControllerInput : PlayerInput
 {
 
+
     public PlayerGameControllerInput(Player owner) : base(owner)
     {
         InputType = EInputType.GAMECONTROLLER;
+        TopActionButton = new ActionButtonTopGameController(owner.ID);
+        LeftActionButton = new ActionButtonLeftGameController(owner.ID);
     }
 
     public override void FixedUpdate()
     {
-        PressActionButton();
+        TopActionButton.Press();
+        LeftActionButton.Press();
         Set(Input.GetAxis("Horizontal" + Owner.ID), Input.GetAxis("Vertical" + Owner.ID));
     }
 
-    public override bool IsPressingActionButton()
-    {
-        return Input.GetButtonDown("Shoot" + Owner.ID);
-    }
 }
 

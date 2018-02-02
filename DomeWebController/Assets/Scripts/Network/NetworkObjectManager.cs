@@ -49,7 +49,12 @@ public class NetworkObjectManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdPressActionButton()
+    public void CmdPressActionButtonLeft()
+    {
+    }
+
+    [Command]
+    public void CmdPressActionButtonTop()
     {
 
     }

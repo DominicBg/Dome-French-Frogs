@@ -3,17 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
+public enum EDomeLayer
+{
+    LAYER0_CLOSE = 1,
+    LAYER1_FAR = 2,
+    LAYER2_VERYFAR = 3,
+}
+
+
 public class Dome : MonoBehaviour
 {
 	public static Dome instance;
-	void Awake()
+
+    void Awake()
 	{
 		instance = this;
 	}
-	public float radiusClose = 25;
-	public float radiusFar = 50;
-	public float offTop = 2;
-	public float limitBottom = -10;
+
+    [Header("Dome Depth Parameters")]
+    [SerializeField] public float radiusClose = 25;
+    [SerializeField] public float radiusFar = 50;
+    [SerializeField] public float offTop = 2;
+    [SerializeField] public float limitBottom = -10;
+
+    public static float GetRadiusByDomeLayer(EDomeLayer layer)
+    {
+        return instance.radiusClose * (int)layer;
+    }
+    
+
 }
 
 public static class DomeStatic {

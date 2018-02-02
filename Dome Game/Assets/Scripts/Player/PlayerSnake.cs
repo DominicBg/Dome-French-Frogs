@@ -11,34 +11,47 @@ public class PlayerSnake : Player
     public bool isDebug = false;
 
     [Header("Components")]
-    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField]
+    SpriteRenderer spriteRenderer;
     [SerializeField] Transform spriteTransform;
-	Transform emptyParent;
+    Transform emptyParent;
 
     [Header("Prefabs")]
     [SerializeField]
     PlayerTail tailPrefab;
 
-    [Header("Param")]
-    [SerializeField] float tailDistance = 5;
-
-    [SerializeField] float moveSpeed = 25;
+    [Header("Speed Parameters")]
+    [SerializeField]
+    float moveSpeed = 25;
+    [SerializeField] float breakingSpeed = 10;
     [SerializeField] float rotationSpeed = 5;
-    //[SerializeField] float friction = 5;
-    //[SerializeField] float acceleration = 10f;
-    //[SerializeField] float maxVelocity = 10;
+
+    [Header("Tail Parameters")]
+    [SerializeField]
+    float tailDistance = 5;
+
+    EPlayerSnakeMovement CurrentSnakeMovement;
+    EDomeLayer CurrentDomeLayer;
+
 
     float currentSpeed;
     Vector2 currentDirection = Vector2.one;
-    //Vector2 velocity;
-    //Vector2 previousDirection;
+    float currentDomeRadius;
+
+
     [SerializeField] List<PlayerTail> tailList = new List<PlayerTail>();
 
-    [Header("Dash Param")]
-    [SerializeField] float dashSpeedIncrease = 25;
+    [Header("Dash Parameters")]
+    [SerializeField]
+    float dashSpeedMultiplier = 2f;
     [SerializeField] float dashCooldown = 2;
     [SerializeField] float dashDuration = 1;
     bool dashReady = true;
+
+    [Header("Dive Parameters")]
+    [SerializeField]
+    float diveDuration = 2;
+    bool diveReady = true;
     #endregion
 
     //LE SPAWN EST CALL DANS LE DEBUG START
@@ -48,12 +61,13 @@ public class PlayerSnake : Player
     void Start()
     {
         if (isDebug)
-        	Spawn(1, new PlayerGameControllerInput(this), "testmonsieur");
+            Spawn(1, new PlayerGameControllerInput(this), "testmonsieur");
     }
+
     void UpdatePositionSphere()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-            transform.SetPositionSphere(Dome.instance.radiusClose);
+        currentDomeRadius = Mathf.MoveTowards(currentDomeRadius, Dome.GetRadiusByDomeLayer(CurrentDomeLayer), 30 * Time.deltaTime);
+        transform.SetPositionSphere(currentDomeRadius);
     }
     #endregion
 
@@ -67,45 +81,59 @@ public class PlayerSnake : Player
             UpdateSpeed();
             UpdateTail();
             UpdatePositionSphere();
+
             if (Input.GetKeyDown(KeyCode.X))
                 AddTailPart();
+
+            if (Input.GetKeyDown(KeyCode.L))
+                Dive();
         }
     }
 
     public override void Spawn(int id, PlayerInput playerInput, string name)
     {
         ID = id;
-        transform.SetPositionSphere(Dome.instance.radiusClose);
         PInput = playerInput;
         Name = name;
-        PInput.OnPressActionButton.AddListener(PressActionButton);
 
-		emptyParent = new GameObject("Player" + ID).transform;
-		transform.SetParent(emptyParent,false);
+        PInput.LeftActionButton.AddListener(Dash);
+        PInput.TopActionButton.AddListener(Dive);
+
+        CurrentSnakeMovement = EPlayerSnakeMovement.REGULAR;
+        CurrentDomeLayer = EDomeLayer.LAYER0_CLOSE;
+
+        currentDomeRadius = Dome.GetRadiusByDomeLayer(CurrentDomeLayer);
+        transform.SetPositionSphere(currentDomeRadius);
+
+        emptyParent = new GameObject("Player" + ID).transform;
+        transform.SetParent(emptyParent, false);
     }
 
-    public override void PressActionButton()
-    {
-        Dash();
-    }
+  
 
     private void UpdateSpeed()
     {
-		if (PInput.Y < 0) {
-			currentSpeed = Mathf.Lerp (25, 10, Mathf.Abs (PInput.Y));
-		} 
-		else {
-			currentSpeed = 25;
-		}
-		/*
-		if (currentSpeed > moveSpeed)
-			currentSpeed -= (dashSpeedIncrease / dashDuration) * Time.deltaTime;
-		else
-		{
-			currentSpeed += (PInput.Y * Time.deltaTime);
-			currentSpeed = Mathf.Clamp (currentSpeed, 10, 30);
-		}
-		*/
+        float destSpeed = 0;
+        float ClampedSpeed = Mathf.Lerp(moveSpeed, breakingSpeed, Mathf.Abs(PInput.Y));
+
+        switch (CurrentSnakeMovement)
+        {
+
+            case EPlayerSnakeMovement.REGULAR:
+                destSpeed = (PInput.Y < 0) ? ClampedSpeed : moveSpeed;
+                break;
+            case EPlayerSnakeMovement.DASH:
+                destSpeed = moveSpeed * dashSpeedMultiplier;
+                break;
+            case EPlayerSnakeMovement.DIVE:
+                destSpeed = (PInput.Y < 0) ? ClampedSpeed : moveSpeed;
+                break;
+            default:
+                destSpeed = moveSpeed;
+                break;
+        }
+
+        currentSpeed = Mathf.MoveTowards(currentSpeed, destSpeed, 30 * Time.deltaTime);
 
     }
 
@@ -113,17 +141,54 @@ public class PlayerSnake : Player
     {
         if (dashReady)
         {
-            currentSpeed = moveSpeed + dashSpeedIncrease;
-            StartCoroutine(DashCoolDownDelay());
+            StartCoroutine(DashCoroutine());
         }
     }
 
-    IEnumerator DashCoolDownDelay()
+    void Dive()
     {
+        if (diveReady)
+        {
+            StartCoroutine(DiveCoroutine());
+        }
+    }
+
+    IEnumerator DashCoroutine()
+    {
+        diveReady = false;
         dashReady = false;
-        yield return new WaitForSeconds(dashCooldown);
+
+        CurrentSnakeMovement = EPlayerSnakeMovement.DASH;
+
+        yield return new WaitForSeconds(dashDuration);
+
+        CurrentSnakeMovement = EPlayerSnakeMovement.REGULAR;
+
+        yield return new WaitForSeconds(dashCooldown - dashDuration);
+
+        diveReady = true;
         dashReady = true;
     }
+
+    IEnumerator DiveCoroutine()
+    {
+        dashReady = false;
+        diveReady = false;
+
+        CurrentDomeLayer = EDomeLayer.LAYER1_FAR;
+        CurrentSnakeMovement = EPlayerSnakeMovement.DIVE;
+
+        yield return new WaitForSeconds(diveDuration);
+
+        CurrentDomeLayer = EDomeLayer.LAYER0_CLOSE;
+        CurrentSnakeMovement = EPlayerSnakeMovement.REGULAR;
+
+        diveReady = true;
+        dashReady = true;
+    }
+
+
+
     override public void MoveSteer(Vector2 dir)
     {
         //X input = rotation
@@ -144,13 +209,13 @@ public class PlayerSnake : Player
         //Move everyother tail part
         for (int i = tailList.Count - 1; i > 0; i--)
         {
-			Transform prevTail = tailList[i - 1].transform;
-			Transform currentTail = tailList[i].transform;
+            Transform prevTail = tailList[i - 1].transform;
+            Transform currentTail = tailList[i].transform;
             MoveTailLerp(prevTail, currentTail);
         }
     }
 
-	void MoveTailLerp(Transform prevTail, Transform currentTail)
+    void MoveTailLerp(Transform prevTail, Transform currentTail)
     {
         Vector3 deltaPos = prevTail.position - currentTail.position;
         currentTail.position = Vector3.MoveTowards(
@@ -173,43 +238,43 @@ public class PlayerSnake : Player
         PlayerTail tailPart = Instantiate(tailPrefab, tailPos, transform.rotation);
         tailPart.transform.SetPositionSphere(Dome.instance.radiusClose);
         tailPart.transform.rotation = transform.rotation;
-        
-        tailPart.isLast = true;
-		tailPart.playerRef = this;
 
-		tailList.Add(tailPart);	
+        tailPart.isLast = true;
+        tailPart.playerRef = this;
+
+        tailList.Add(tailPart);
         if (tailList.Count > 1)
             tailList[tailList.Count - 2].isLast = false;
 
-		tailPart.transform.SetParent(emptyParent,false);
+        tailPart.transform.SetParent(emptyParent, false);
     }
 
     public override void Death()
     {
         base.Death();
 
-		Destroy(emptyParent.gameObject);
+        Destroy(emptyParent.gameObject);
     }
 
-	void OnCollisionEnter(Collision other)
-	{
-		if(other.gameObject.CompareTag("Tail"))
-		{
-			PlayerTail tail = other.gameObject.GetComponent<PlayerTail>();
-			
-			if (tail.isLast)
-			{
-				Kill();
-				tail.playerRef.Death();
-			}
-			else
-				Death();
-		}
-		if (other.gameObject.CompareTag("Player"))
-		{
-			PlayerSnake p = other.gameObject.GetComponent<PlayerSnake>();
-			p.Death();
-			Death();
-		}
-	}
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Tail"))
+        {
+            PlayerTail tail = other.gameObject.GetComponent<PlayerTail>();
+
+            if (tail.isLast)
+            {
+                Kill();
+                tail.playerRef.Death();
+            }
+            else
+                Death();
+        }
+        if (other.gameObject.CompareTag("Player"))
+        {
+            PlayerSnake p = other.gameObject.GetComponent<PlayerSnake>();
+            p.Death();
+            Death();
+        }
+    }
 }
