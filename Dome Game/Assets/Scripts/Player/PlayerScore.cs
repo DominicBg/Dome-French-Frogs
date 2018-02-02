@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerScore : MonoBehaviour {
 
-    public Text playerNameTxt, scoreText;
+    public TextMeshProUGUI playerNameTxt, scoreText;
 
     public Player CurrentPlayer { private set; get; }
  

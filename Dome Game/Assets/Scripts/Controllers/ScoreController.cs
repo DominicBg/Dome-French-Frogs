@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using TMPro;
 using UnityEngine.UI;
 
 public class ScoreController : Singleton<ScoreController>
@@ -14,7 +15,7 @@ public class ScoreController : Singleton<ScoreController>
     int highestScore, nbScores = 10;
 
     [SerializeField]
-    Text highScoreText;
+    TextMeshProUGUI highScoreText;
 
     [SerializeField]
     Transform scoreLeaderboardTransform;

@@ -1,4 +1,4 @@
-WindowsStandalone
+WebGL
 75cd0c6c744b9733ef29aa6c59ece2b1 Assembly-CSharp.dll:TMPro.Examples.VertexZoom
 c906602d9b43cc5e075f80e1d8ae7c79 Assembly-CSharp.dll:TMPro.Examples.Benchmark01_UGUI
 dc07d7ad69b399a46e92c483bf1c04ca UnityEngine.Analytics.dll:UnityEngine.Analytics.AnalyticsTracker
@@ -128,6 +128,7 @@ e763036081c708b34f78f5a56f72c23d TextMeshPro-2017.1-1.0.56-Runtime.dll:TMPro.TMP
 136f28bae18bcd1072d830ee3456f3ab TextMeshPro-2017.1-1.0.56-Runtime.dll:TMPro.TMP_SubMesh
 5833a86cc374f497ae8d9fb9d8c3e5f4 TextMeshPro-2017.1-1.0.56-Runtime.dll:TMPro.TMP_SubMeshUI
 d672cee35261f9935d5ce974c746730f TextMeshPro-2017.1-1.0.56-Runtime.dll:TMPro.TMP_Text
+498f833ff2613f7a0b2070db72cded11 Assembly-CSharp.dll:.JoystickScript
 0ea7e3a1b65cd933d7a007e6774c4eaa Assembly-CSharp.dll:.Sequences
 bc68edb0af574bf79f9550ead8ebae5c UnityEngine.HoloLens.dll:UnityEngine.Audio.AudioSpatializerMicrosoft
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInput
@@ -137,6 +138,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.Spa
 50a0fa002cfc67638c87a901e46b763e Assembly-CSharp.dll:TMPro.Examples.TMP_TextSelector_B
 020550babdb991365f61c5bffe1f4f52 Assembly-CSharp.dll:TMPro.Examples.Benchmark03
 b9332c0eee630779376843b5343eb250 Assembly-CSharp.dll:TMPro.Examples.TMP_TextInfoDebugTool
+10002723435db999d529b3bc7337c633 Assembly-CSharp.dll:.ConnectionManager
 f4bd1aee67eeef7953cce6c44588b3d7 TextMeshPro-2017.1-1.0.56-Runtime.dll:TMPro.TextContainer
 8e879b98cad4aa17a0beef746daecd35 TextMeshPro-2017.1-1.0.56-Runtime.dll:TMPro.TextMeshPro
 cdb4459900f4743ae0e8ca5a2c3a821a TextMeshPro-2017.1-1.0.56-Runtime.dll:TMPro.TextMeshProUGUI
@@ -178,6 +180,7 @@ b11448bc44f49db3e26525de9acc4a98 TextMeshPro-2017.1-1.0.56-Editor.dll:TMPro.Edit
 205965134a5874db410d674ebdf33ba7 Assembly-CSharp.dll:.ExampleWheelController
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.TeleType
 1df234784afa2cbe0613283a35c66908 Assembly-CSharp.dll:.DomeNetworkManager
+2e286c747f78323f90272561cf282aeb Assembly-CSharp.dll:.UIManager
 8a50d3d11bf0cc541f5c35347dd25633 Assembly-CSharp.dll:TMPro.Examples.ShaderPropAnimator
 307eb1f649a78248e944ea8376c91b28 Assembly-CSharp.dll:.NetworkObjectManager
 76015de5fcb247eeb8df66c001d5a22d Assembly-CSharp.dll:TMPro.Examples.TMP_FrameRateCounter
@@ -196,6 +199,7 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 3f32f08a64daf40b09ed864d96fe3840 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransform
 73843688b51256aed059f049c540bca8 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformChild
 528ea1fd7c01796fc60c4e2f172ea229 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
+b4b629119f9a16341204cbd4567170d9 Assembly-CSharp.dll:.InputTouchManager
 62229a3e4d53ca59bec192e89627ed52 Assembly-CSharp.dll:TMPro.Examples.CameraController
 5a35d5b94055acf66f01869f65b7d8a6 Assembly-CSharp.dll:.Basics
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.Callbacks.PlayModeRunnerCallback

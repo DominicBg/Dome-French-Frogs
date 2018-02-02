@@ -121,28 +121,6 @@ public class PlayerSnake : Player
         transform.MoveSphere(spriteTransform.right, currentSpeed * Time.fixedDeltaTime);
     }
 
-	/*
-    Currently disabled
-    void SetVelocity(Vector2 dir)
-    {
-        //Y input = speed
-        if (dir.magnitude == 0 || Input.GetButton("Speed" + ID))
-        {
-            velocity -= velocity * friction * Time.deltaTime;
-        }
-        else
-        {
-            if (dir.magnitude > 1)
-                dir.Normalize();
-
-            velocity -= velocity * friction * Time.deltaTime;
-
-            velocity += dir * acceleration * Time.deltaTime;
-            if (velocity.magnitude > maxVelocity)
-                velocity = velocity.normalized * maxVelocity;
-        }
-    }
-	*/
     void UpdateTail()
     {
         if (tailList.Count == 0)
@@ -196,15 +174,7 @@ public class PlayerSnake : Player
 
     public override void Death()
     {
-		base.Death();
-
-		/* On destroy le parent instead
-		foreach(PlayerTail tail in tailList)
-        {
-            Destroy(tail.gameObject);
-        }
-        tailList.Clear();
-		 */
+        base.Death();
 
 		Destroy(emptyParent.gameObject);
     }
