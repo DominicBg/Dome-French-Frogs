@@ -15,7 +15,7 @@ public class Player : MonoBehaviour, IComparable<Player>   {
     public PlayerInput PInput { protected set; get; }
 
 
-    public virtual void Spawn(int id, PlayerInput inputType, string Name){
+    public virtual void Init(int id, PlayerInput inputType, string Name){
 
     }
 

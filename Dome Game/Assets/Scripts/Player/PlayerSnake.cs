@@ -9,6 +9,8 @@ public class PlayerSnake : Player
 
     [Header("Debug")]
     public bool isDebug = false;
+	[SerializeField] bool canSelfKill = true;
+	[SerializeField] bool headOnheadDeath = true;
 
     [Header("Components")]
     [SerializeField]
@@ -56,6 +58,7 @@ public class PlayerSnake : Player
 
     //LE SPAWN EST CALL DANS LE DEBUG START
 
+	/*
     #region DEBUG
     //DEBUG
     void Start()
@@ -70,7 +73,7 @@ public class PlayerSnake : Player
         transform.SetPositionSphere(currentDomeRadius);
     }
     #endregion
-
+	*/
 
     public override void FixedUpdate()
     {
@@ -80,17 +83,19 @@ public class PlayerSnake : Player
             MoveSteer(PInput.XY);
             UpdateSpeed();
             UpdateTail();
-            UpdatePositionSphere();
+            //UpdatePositionSphere();
 
+			/*
             if (Input.GetKeyDown(KeyCode.X))
                 AddTailPart();
 
             if (Input.GetKeyDown(KeyCode.L))
                 Dive();
+                */
         }
     }
 
-    public override void Spawn(int id, PlayerInput playerInput, string name)
+    public override void Init(int id, PlayerInput playerInput, string name)
     {
         ID = id;
         PInput = playerInput;
@@ -109,7 +114,6 @@ public class PlayerSnake : Player
         transform.SetParent(emptyParent, false);
     }
 
-  
 
     private void UpdateSpeed()
     {
@@ -251,8 +255,11 @@ public class PlayerSnake : Player
 
     public override void Death()
     {
-        base.Death();
 
+		PInput.LeftActionButton.RemoveAllListeners();
+
+        base.Death();
+		PlayerController.Instance.RespawnPlayer(ID, PInput);
         Destroy(emptyParent.gameObject);
     }
 
@@ -262,6 +269,9 @@ public class PlayerSnake : Player
         {
             PlayerTail tail = other.gameObject.GetComponent<PlayerTail>();
 
+			if(!canSelfKill && tail.playerRef == this)
+				return;
+
             if (tail.isLast)
             {
                 Kill();
@@ -270,10 +280,10 @@ public class PlayerSnake : Player
             else
                 Death();
         }
-        if (other.gameObject.CompareTag("Player"))
+
+		//Head to head
+		if (headOnheadDeath && other.gameObject.CompareTag("Player"))
         {
-            PlayerSnake p = other.gameObject.GetComponent<PlayerSnake>();
-            p.Death();
             Death();
         }
     }

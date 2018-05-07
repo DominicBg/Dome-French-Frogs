@@ -31,14 +31,19 @@ public class Dome : MonoBehaviour
     {
         return instance.radiusClose * (int)layer;
     }
-    
-
 }
 
 public static class DomeStatic {
 
 	public enum Dimension{Close, Far};
 	public static Vector3 center = Vector3.zero;
+
+	public static void SetRandomSpherePosition(this Transform tr, EDomeLayer layer)
+	{
+		tr.position = (Random.onUnitSphere);
+		tr.SetPositionSphere(Dome.instance.radiusClose * (int)layer);
+	}
+
 
 	/// <summary>
 	/// Rotate around in a spheric motion

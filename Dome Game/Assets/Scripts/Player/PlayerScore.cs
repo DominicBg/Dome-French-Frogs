@@ -11,7 +11,6 @@ public class PlayerScore : MonoBehaviour {
     public Player CurrentPlayer { private set; get; }
  
   
-
 	// Use this for initialization
 	void Start () {
         gameObject.SetActive(true);
@@ -33,6 +32,4 @@ public class PlayerScore : MonoBehaviour {
         SetName();
         SetScore();
     }
-
-  
 }

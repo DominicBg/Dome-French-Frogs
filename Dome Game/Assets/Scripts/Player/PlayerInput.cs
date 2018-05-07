@@ -53,20 +53,22 @@ public class PlayerNetworkInput : PlayerInput
 
 public class PlayerGameControllerInput : PlayerInput
 {
-
+	protected Rewired.Player input;
 
     public PlayerGameControllerInput(Player owner) : base(owner)
     {
         InputType = EInputType.GAMECONTROLLER;
         TopActionButton = new ActionButtonTopGameController(owner.ID);
         LeftActionButton = new ActionButtonLeftGameController(owner.ID);
+
+		input = Rewired.ReInput.players.GetPlayer(owner.ID);
     }
 
     public override void FixedUpdate()
     {
         TopActionButton.Press();
         LeftActionButton.Press();
-        Set(Input.GetAxis("Horizontal" + Owner.ID), Input.GetAxis("Vertical" + Owner.ID));
+		Set(input.GetAxis("Horizontal"), input.GetAxis("Vertical"));
     }
 
 }

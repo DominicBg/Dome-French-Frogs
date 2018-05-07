@@ -32,20 +32,26 @@ public abstract class InputActionButton
         OnPress = new UnityEvent();
     }
 
-
+	public void RemoveAllListeners()
+	{
+		OnPress.RemoveAllListeners();
+	}
 }
 
 
 public class ActionButtonTopGameController : InputActionButton
 {
-    public ActionButtonTopGameController(int id) : base(id)
-    {
+	protected Rewired.Player input;
 
-    }
+    public ActionButtonTopGameController(int id) : base(id)
+	{		
+		input = Rewired.ReInput.players.GetPlayer(id);
+
+	}
 
     protected override bool IsPressing()
     {
-        return Input.GetButtonDown("Dive" + ID);
+		return input.GetButtonDown("Dive");
     }
 
 }
@@ -82,14 +88,16 @@ public class ActionButtonLeftNetwork : InputActionButton
 
 public class ActionButtonLeftGameController: InputActionButton
 {
+	protected Rewired.Player input;
+
     public ActionButtonLeftGameController(int id) : base(id)
     {
-
-    }
+		input = Rewired.ReInput.players.GetPlayer(id);
+	}
 
     protected override bool IsPressing()
     {
-         return Input.GetButtonDown("Dash" + ID);
+		return input.GetButtonDown("Dash");
     }
 
 }

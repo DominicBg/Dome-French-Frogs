@@ -119,7 +119,5 @@ public class ScoreController : Singleton<ScoreController>
                     Leaderboard[i].gameObject.SetActive(true);
             }
         }
-
     }
-
 }
