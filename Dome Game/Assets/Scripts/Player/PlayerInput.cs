@@ -54,7 +54,7 @@ public class PlayerNetworkInput : PlayerInput
 public class PlayerGameControllerInput : PlayerInput
 {
 	protected Rewired.Player input;
-
+	int id;
     public PlayerGameControllerInput(Player owner) : base(owner)
     {
         InputType = EInputType.GAMECONTROLLER;
@@ -62,6 +62,7 @@ public class PlayerGameControllerInput : PlayerInput
         LeftActionButton = new ActionButtonLeftGameController(owner.ID);
 
 		input = Rewired.ReInput.players.GetPlayer(owner.ID);
+		id = owner.ID;
     }
 
     public override void FixedUpdate()

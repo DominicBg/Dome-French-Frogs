@@ -32,8 +32,8 @@ public class PlayerSnake : Player
     [SerializeField]
     float tailDistance = 5;
 
-    EPlayerSnakeMovement CurrentSnakeMovement;
-    EDomeLayer CurrentDomeLayer;
+    [SerializeField] EPlayerSnakeMovement CurrentSnakeMovement;
+	[SerializeField] EDomeLayer CurrentDomeLayer;
 
 
     float currentSpeed;
@@ -56,24 +56,7 @@ public class PlayerSnake : Player
     bool diveReady = true;
     #endregion
 
-    //LE SPAWN EST CALL DANS LE DEBUG START
-
-	/*
-    #region DEBUG
-    //DEBUG
-    void Start()
-    {
-        if (isDebug)
-            Spawn(1, new PlayerGameControllerInput(this), "testmonsieur");
-    }
-
-    void UpdatePositionSphere()
-    {
-        currentDomeRadius = Mathf.MoveTowards(currentDomeRadius, Dome.GetRadiusByDomeLayer(CurrentDomeLayer), 30 * Time.deltaTime);
-        transform.SetPositionSphere(currentDomeRadius);
-    }
-    #endregion
-	*/
+  
 
     public override void FixedUpdate()
     {
@@ -95,15 +78,11 @@ public class PlayerSnake : Player
         }
     }
 
-    public override void Init(int id, PlayerInput playerInput, string name)
+    public override void Init(int id, string name)
     {
         ID = id;
-        PInput = playerInput;
         Name = name;
-
-        PInput.LeftActionButton.AddListener(Dash);
-        PInput.TopActionButton.AddListener(Dive);
-
+		
         CurrentSnakeMovement = EPlayerSnakeMovement.REGULAR;
         CurrentDomeLayer = EDomeLayer.LAYER0_CLOSE;
 
@@ -113,6 +92,13 @@ public class PlayerSnake : Player
         emptyParent = new GameObject("Player" + ID).transform;
         transform.SetParent(emptyParent, false);
     }
+
+	public void SetPlayerInput(PlayerInput playerInput)
+	{
+		PInput = playerInput;
+		PInput.LeftActionButton.AddListener(Dash);
+		PInput.TopActionButton.AddListener(Dive);
+	}
 
 
     private void UpdateSpeed()

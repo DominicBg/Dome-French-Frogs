@@ -66,7 +66,7 @@ public class PlayerController : Singleton<PlayerController>
 
     public GameObject InstantiatePlayer()
     {
-        return InstantiatePlayer(PlayerCount + 1, EInputType.GAMECONTROLLER);
+        return InstantiatePlayer(PlayerCount, EInputType.GAMECONTROLLER);
     }
 
     public GameObject InstantiatePlayer(NetworkInstanceId netId)
@@ -75,7 +75,7 @@ public class PlayerController : Singleton<PlayerController>
     }
 
 	//A refactor, pour le demo de Guigui (pour le respawn)
-	public GameObject InstantiatePlayer(int id, PlayerInput inputType)
+	public GameObject InstantiatePlayer(int id, PlayerInput pInput)
     {
         if (PlayerList == null)
             PlayerList = new List<Player>();
@@ -86,7 +86,8 @@ public class PlayerController : Singleton<PlayerController>
         Player newPlayer = PlayerGameObject.GetComponent<Player>();
 
 
-		newPlayer.Init(id, inputType, "Player " + PlayerCount.ToString());
+		newPlayer.Init(id, "Player " + PlayerCount.ToString());
+		newPlayer.SetPlayerInput(pInput);
 
         PlayerList.Add(newPlayer);
 
@@ -103,10 +104,11 @@ public class PlayerController : Singleton<PlayerController>
 		PlayerGameObject.transform.SetRandomSpherePosition(EDomeLayer.LAYER0_CLOSE);
 		
 		Player newPlayer = PlayerGameObject.GetComponent<Player>();
-		
+		newPlayer.Init(id, "Player " + PlayerCount.ToString());
+
 		PlayerInput pInput = PlayerInputFactory.GetInput(inputType, newPlayer);
-		
-		newPlayer.Init(id, pInput, "TestMonsieur" + PlayerCount.ToString());
+
+		newPlayer.SetPlayerInput(pInput);
 		
 		PlayerList.Add(newPlayer);
 		

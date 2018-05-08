@@ -15,10 +15,15 @@ public class Player : MonoBehaviour, IComparable<Player>   {
     public PlayerInput PInput { protected set; get; }
 
 
-    public virtual void Init(int id, PlayerInput inputType, string Name){
-
+    public virtual void Init(int id, string Name)
+	{
+		ID = id;
+		this.Name = Name;
     }
-
+	public void SetPlayerInput(PlayerInput playerInput)
+	{
+		PInput = playerInput;
+	}
 
     protected virtual void Move(Vector2 dir) { }
     public virtual void MoveSteer(Vector2 dir) { }
